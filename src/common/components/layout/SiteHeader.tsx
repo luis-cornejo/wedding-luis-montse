@@ -1,4 +1,5 @@
 import type { Copy, Locale } from '../../../application/types';
+
 import { Brand, Header, LanguageSwitch, Nav } from './SiteHeader.styled';
 
 type Props = {

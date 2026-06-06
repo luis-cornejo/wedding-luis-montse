@@ -6,6 +6,7 @@ import {
   SectionText,
   SectionTitle,
 } from '../../../../common/components/ui';
+
 import { CardSection, TimelineCard, TimelineGrid } from './DaySection.styled';
 
 type Props = {

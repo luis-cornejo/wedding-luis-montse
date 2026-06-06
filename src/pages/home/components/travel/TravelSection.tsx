@@ -1,5 +1,11 @@
 import type { Copy } from '../../../../application/types';
-import { Eyebrow, SectionContainer, SectionText, SectionTitle } from '../../../../common/components/ui';
+import {
+  Eyebrow,
+  SectionContainer,
+  SectionText,
+  SectionTitle,
+} from '../../../../common/components/ui';
+
 import {
   Address,
   Aside,

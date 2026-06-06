@@ -6,6 +6,7 @@ import {
   SectionText,
   SectionTitle,
 } from '../../../../common/components/ui';
+
 import { Grid, Large, Quote, Tall, Wide } from './GallerySection.styled';
 
 type Props = {

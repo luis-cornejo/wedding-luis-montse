@@ -1,5 +1,6 @@
 import type { Copy } from '../../../../application/types';
 import { Countdown, Eyebrow } from '../../../../common/components/ui';
+
 import {
   CopyColumn,
   FloatingCard,

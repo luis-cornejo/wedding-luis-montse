@@ -27,8 +27,7 @@ export const copy: Record<Locale, Copy> = {
     story: {
       eyebrow: 'Nuestra historia',
       title: 'Queremos que este día se sienta como una sobremesa larga.',
-      body:
-        'Nos hace ilusión montar una celebración con textura editorial, jardines, calma y una luz cálida de noviembre. Menos artificio y más presencia: familia, amigos, una ceremonia breve y una fiesta bonita.',
+      body: 'Nos hace ilusión montar una celebración con textura editorial, jardines, calma y una luz cálida de noviembre. Menos artificio y más presencia: familia, amigos, una ceremonia breve y una fiesta bonita.',
       note: '“Que el recuerdo sea suave, bonito y fácil de volver a mirar.”',
     },
     day: {
@@ -62,8 +61,7 @@ export const copy: Record<Locale, Copy> = {
     travel: {
       eyebrow: 'Cómo llegar',
       title: 'Mas Llombart, a un paso de Barcelona.',
-      body:
-        'La finca está en Sant Fost de Campsentelles, en una zona tranquila y verde. Está lo bastante cerca como para llegar fácil y lo bastante apartada como para que el día tenga su propio ritmo.',
+      body: 'La finca está en Sant Fost de Campsentelles, en una zona tranquila y verde. Está lo bastante cerca como para llegar fácil y lo bastante apartada como para que el día tenga su propio ritmo.',
       address: 'Avda. de la Conreria, 16 · 08105 Sant Fost de Campsentelles, Barcelona',
       action: 'Abrir en Google Maps',
       tips: [
@@ -84,8 +82,7 @@ export const copy: Record<Locale, Copy> = {
     rsvp: {
       eyebrow: 'RSVP',
       title: 'Confírmanos si vienes antes del 10 de junio.',
-      body:
-        'Si tienes alguna alergia, intolerancia o sigues una dieta especial, indícanoslo aquí para trasladarlo correctamente a la finca.',
+      body: 'Si tienes alguna alergia, intolerancia o sigues una dieta especial, indícanoslo aquí para trasladarlo correctamente a la finca.',
       name: 'Nombre y apellidos',
       attendance: '¿Podrás venir?',
       yes: 'Sí, allí estaré',
@@ -108,8 +105,7 @@ export const copy: Record<Locale, Copy> = {
     gallery: {
       eyebrow: 'Atmósfera',
       title: 'Jardín, mesa larga, papel cálido y luz baja.',
-      body:
-        'El tono correcto ya no va de iconos juguetones ni estrellitas. Va de capas suaves, fotos grandes, aire y una composición más editorial.',
+      body: 'El tono correcto ya no va de iconos juguetones ni estrellitas. Va de capas suaves, fotos grandes, aire y una composición más editorial.',
       quote: '“Todo lo importante cabe en una tarde bien contada.”',
     },
     footer: 'Con cariño, Montse y Luis',
@@ -140,8 +136,7 @@ export const copy: Record<Locale, Copy> = {
     story: {
       eyebrow: 'La nostra història',
       title: 'Volem que aquest dia se senti com una sobretaula llarga.',
-      body:
-        'Ens fa il·lusió muntar una celebració amb textura editorial, jardins, calma i una llum càlida de novembre. Menys artifici i més presència: família, amics, una cerimònia breu i una festa bonica.',
+      body: 'Ens fa il·lusió muntar una celebració amb textura editorial, jardins, calma i una llum càlida de novembre. Menys artifici i més presència: família, amics, una cerimònia breu i una festa bonica.',
       note: '“Que el record sigui suau, bonic i fàcil de tornar a mirar.”',
     },
     day: {
@@ -175,8 +170,7 @@ export const copy: Record<Locale, Copy> = {
     travel: {
       eyebrow: 'Com arribar',
       title: 'Mas Llombart, a tocar de Barcelona.',
-      body:
-        'La finca és a Sant Fost de Campsentelles, en una zona tranquil·la i verda. És prou a prop per arribar fàcil i prou apartada perquè el dia tingui el seu propi ritme.',
+      body: 'La finca és a Sant Fost de Campsentelles, en una zona tranquil·la i verda. És prou a prop per arribar fàcil i prou apartada perquè el dia tingui el seu propi ritme.',
       address: 'Avda. de la Conreria, 16 · 08105 Sant Fost de Campsentelles, Barcelona',
       action: 'Obrir a Google Maps',
       tips: [
@@ -197,8 +191,7 @@ export const copy: Record<Locale, Copy> = {
     rsvp: {
       eyebrow: 'RSVP',
       title: 'Confirmeu-nos si veniu abans del 10 de juny.',
-      body:
-        'Si tens alguna al·lèrgia, intolerància o segueixes una dieta especial, indica-ho aquí per traslladar-ho correctament a la finca.',
+      body: 'Si tens alguna al·lèrgia, intolerància o segueixes una dieta especial, indica-ho aquí per traslladar-ho correctament a la finca.',
       name: 'Nom i cognoms',
       attendance: 'Podràs venir?',
       yes: 'Sí, hi seré',
@@ -221,8 +214,7 @@ export const copy: Record<Locale, Copy> = {
     gallery: {
       eyebrow: 'Atmosfera',
       title: 'Jardí, taula llarga, paper càlid i llum baixa.',
-      body:
-        'El to correcte ja no va d’icones juganeres ni estrelletes. Va de capes suaus, fotos grans, aire i una composició més editorial.',
+      body: 'El to correcte ja no va d’icones juganeres ni estrelletes. Va de capes suaus, fotos grans, aire i una composició més editorial.',
       quote: '“Tot el que importa cap dins d’una tarda ben explicada.”',
     },
     footer: 'Amb afecte, Montse y Luis',

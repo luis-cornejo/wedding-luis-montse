@@ -8,6 +8,7 @@ import {
   SectionText,
   SectionTitle,
 } from '../../../../common/components/ui';
+
 import {
   Card,
   CheckboxLabel,
@@ -135,11 +136,7 @@ export default function RsvpSection({ rsvp }: Props) {
             <input id="guest-other" name="other" type="checkbox" value="yes" />
             <span>{rsvp.other}</span>
           </CheckboxLabel>
-          <input
-            id="guest-other-details"
-            name="otherDetails"
-            placeholder={rsvp.otherPlaceholder}
-          />
+          <input id="guest-other-details" name="otherDetails" placeholder={rsvp.otherPlaceholder} />
           <HelperText>{rsvp.detailHint}</HelperText>
         </Field>
 

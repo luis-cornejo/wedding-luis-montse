@@ -1,5 +1,6 @@
 import type { Copy } from '../../../../application/types';
 import { Eyebrow, SectionText, SectionTitle } from '../../../../common/components/ui';
+
 import {
   ImageColumn,
   QuoteCard,

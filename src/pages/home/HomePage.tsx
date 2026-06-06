@@ -6,6 +6,7 @@ import type { Locale } from '../../application/types';
 import { SiteFooter, SiteHeader } from '../../common/components/layout';
 import { Main, PageShell } from '../../common/components/ui';
 import { useCountdown } from '../../common/hooks/useCountdown';
+
 import {
   DaySection,
   GallerySection,
