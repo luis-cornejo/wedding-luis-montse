@@ -36,4 +36,12 @@ export const Card = styled.div`
   color: var(--muted);
   line-height: 1.6;
   box-shadow: var(--shadow-soft);
+
+  p {
+    margin: 0;
+  }
+
+  p + p {
+    margin-top: 0.35rem;
+  }
 `;

@@ -53,7 +53,7 @@ export type Copy = {
     guestType: string;
     guestTypeOptions: string[];
     guestTypeInfoLabel: string;
-    guestTypeInfoBody: string;
+    guestTypeInfoBody: string[];
     diet: string;
     dietOptions: string[];
     allergy: string;

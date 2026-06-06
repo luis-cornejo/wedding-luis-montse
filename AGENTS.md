@@ -73,6 +73,50 @@ Before closing any coding task, run:
 
 Tests are not required unless explicitly requested.
 
+## Local Skills
+
+Local skills live in `skills/`.
+
+Available workflow skill:
+
+- `skills/tool-commit-push/SKILL.md`
+  - propose a conventional commit
+  - run `npm run lint` and `npm run build`
+  - commit only after user confirmation
+  - push to the current branch
+
+Available local conventions:
+
+- `skills/local-code-conventions/SKILL.md`
+  - folder structure
+  - component boundaries
+  - barrel exports
+  - required validation
+- `skills/local-styled-components/SKILL.md`
+  - `styled-components` usage
+  - co-located `*.styled.ts`
+  - styling boundaries
+- `skills/tool-create-pr/SKILL.md`
+  - gather branch context
+  - prepare PR title and body
+  - push if needed
+  - create PR with `gh`
+
+## Skill Setup
+
+To publish local repo skills into Codex's skills directory, run:
+
+```bash
+./skills/setup.sh
+```
+
+This links the repo skills into:
+
+- `$CODEX_HOME/skills`
+- or `~/.codex/skills` if `CODEX_HOME` is not set
+
+`.codex/` is generated locally by `npm run skills:setup` and is not part of the source of truth.
+
 ## Dependency Rules
 
 - Do not add new dependencies unless they are necessary for the task.
