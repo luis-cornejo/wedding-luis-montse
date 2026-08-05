@@ -4,8 +4,8 @@ export const Section = styled.section`
   max-width: 1180px;
   margin: 0 auto 6rem;
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
-  gap: clamp(2rem, 4vw, 4.5rem);
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+  gap: clamp(2rem, 3vw, 3.75rem);
   align-items: center;
 
   @media (max-width: 960px) {
@@ -14,16 +14,22 @@ export const Section = styled.section`
 `;
 
 export const CopyColumn = styled.div`
-  max-width: 640px;
+  max-width: 760px;
 `;
 
 export const Title = styled.h1`
   margin: 0;
   font-family: 'Noto Serif', serif;
-  font-size: clamp(3.1rem, 7vw, 6.2rem);
-  line-height: 0.96;
+  max-width: 12ch;
+  font-size: clamp(2.9rem, 5.2vw, 5rem);
+  line-height: 1.02;
   color: var(--primary);
   letter-spacing: -0.04em;
+  text-wrap: balance;
+
+  @media (max-width: 960px) {
+    max-width: none;
+  }
 `;
 
 export const Text = styled.p`

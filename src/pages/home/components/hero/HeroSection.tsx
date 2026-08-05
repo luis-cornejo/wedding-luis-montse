@@ -1,5 +1,5 @@
 import type { Copy } from '../../../../application/types';
-import { Countdown, Eyebrow } from '../../../../common/components/ui';
+import { Countdown } from '../../../../common/components/ui';
 
 import {
   CopyColumn,
@@ -23,7 +23,6 @@ export default function HeroSection({ countdownItems, hero }: Props) {
   return (
     <Section id="inicio">
       <CopyColumn>
-        <Eyebrow>{hero.eyebrow}</Eyebrow>
         <Title>{hero.title}</Title>
         <Text>{hero.subtitle}</Text>
         <MetaRow>

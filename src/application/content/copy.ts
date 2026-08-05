@@ -6,14 +6,13 @@ export const copy: Record<Locale, Copy> = {
       story: 'Historia',
       day: 'El día',
       travel: 'Llegar',
-      rsvp: 'RSVP',
+      rsvp: 'Confirmación',
       gallery: 'Atmósfera',
     },
     hero: {
-      eyebrow: 'Montse y Luis',
-      title: 'Una boda tranquila, luminosa y muy nuestra.',
+      title: 'Después de mucho meditarlo, hemos decidido casarnos.',
       subtitle:
-        'El nuevo diseño parte de una idea simple: reunirnos en una masía catalana, comer despacio, abrazarnos mucho y celebrar sin prisa.',
+        'Lo celebraremos con una boda cercana, buena comida, buena compañía y muchas ganas de disfrutar.',
       date: '8 de noviembre de 2026',
       place: 'Mas Llombart · Sant Fost de Campsentelles',
       cta: 'Confirmar asistencia',
@@ -25,16 +24,16 @@ export const copy: Record<Locale, Copy> = {
       seconds: 'Seg',
     },
     story: {
-      eyebrow: 'Nuestra historia',
-      title: 'Queremos que este día se sienta como una sobremesa larga.',
-      body: 'Nos hace ilusión montar una celebración con textura editorial, jardines, calma y una luz cálida de noviembre. Menos artificio y más presencia: familia, amigos, una ceremonia breve y una fiesta bonita.',
-      note: '“Que el recuerdo sea suave, bonito y fácil de volver a mirar.”',
+      eyebrow: 'Con los nuestros',
+      title: 'Celebrarlo juntos',
+      body: 'Después de tantos años juntos, nos hace ilusión reunir en un mismo día a la gente que ha formado parte de nuestra vida. Queremos compartir y celebrar este momento con familia, amigos y todas esas personas que forman parte de nuestra historia.',
+      note: '“Wanted dead or alive, pero llegando a tiempo.”',
     },
     day: {
       eyebrow: 'El día',
-      title: 'Un ritmo sencillo, sin carreras.',
+      title: 'El plan',
       intro:
-        'La jornada está pensada para que todo respire: llegar con calma, compartir mesa, alargar la tarde y terminar bailando.',
+        'La idea es sencilla: pasarlo bien. No hay código de vestimenta, así que ven como quieras, pero con traje o vestido (jajaja, es broma).',
       timeline: [
         {
           time: '13:00',
@@ -61,7 +60,7 @@ export const copy: Record<Locale, Copy> = {
     travel: {
       eyebrow: 'Cómo llegar',
       title: 'Mas Llombart, a un paso de Barcelona.',
-      body: 'La finca está en Sant Fost de Campsentelles, en una zona tranquila y verde. Está lo bastante cerca como para llegar fácil y lo bastante apartada como para que el día tenga su propio ritmo.',
+      body: 'La finca está en Sant Fost de Campsentelles, cerca de Barcelona, en un sitio tranquilo y solo para nosotros.',
       address: 'Avda. de la Conreria, 16 · 08105 Sant Fost de Campsentelles, Barcelona',
       action: 'Abrir en Google Maps',
       tips: [
@@ -70,8 +69,8 @@ export const copy: Record<Locale, Copy> = {
           text: 'La opción más simple si vienes desde Barcelona o alrededores.',
         },
         {
-          title: 'Llegad con margen',
-          text: 'La idea es empezar tranquilos, sin entrar corriendo a la ceremonia.',
+          title: 'Parking',
+          text: 'Hay zona para aparcar en la finca.',
         },
         {
           title: 'Noviembre',
@@ -80,8 +79,8 @@ export const copy: Record<Locale, Copy> = {
       ],
     },
     rsvp: {
-      eyebrow: 'RSVP',
-      title: 'Confírmanos si vienes antes del 10 de junio.',
+      eyebrow: 'Confirma tu asistencia',
+      title: 'Confirma y cuéntanos los detalles',
       body: 'Si tienes alguna alergia, intolerancia o sigues una dieta especial, indícanoslo aquí para trasladarlo correctamente a la finca.',
       name: 'Nombre y apellidos',
       attendance: '¿Podrás venir?',
@@ -115,14 +114,13 @@ export const copy: Record<Locale, Copy> = {
       story: 'Història',
       day: 'El dia',
       travel: 'Com arribar',
-      rsvp: 'RSVP',
+      rsvp: 'Confirmació',
       gallery: 'Atmosfera',
     },
     hero: {
-      eyebrow: 'Montse i Luis',
-      title: 'Un casament tranquil, lluminós i molt nostre.',
+      title: 'Després de rumiar-ho molt, hem decidit casar-nos.',
       subtitle:
-        'El nou disseny parteix d’una idea simple: reunir-nos en una masia catalana, dinar sense presses, abraçar-nos molt i celebrar amb calma.',
+        'Ho celebrarem amb un casament proper, bon menjar, bona companyia i moltes ganes de gaudir.',
       date: '8 de novembre de 2026',
       place: 'Mas Llombart · Sant Fost de Campsentelles',
       cta: 'Confirmar assistència',
@@ -134,16 +132,16 @@ export const copy: Record<Locale, Copy> = {
       seconds: 'Seg',
     },
     story: {
-      eyebrow: 'La nostra història',
-      title: 'Volem que aquest dia se senti com una sobretaula llarga.',
-      body: 'Ens fa il·lusió muntar una celebració amb textura editorial, jardins, calma i una llum càlida de novembre. Menys artifici i més presència: família, amics, una cerimònia breu i una festa bonica.',
-      note: '“Que el record sigui suau, bonic i fàcil de tornar a mirar.”',
+      eyebrow: 'Amb els nostres',
+      title: 'Celebrar-ho junts',
+      body: 'Després de tants anys junts, ens fa il·lusió reunir en un mateix dia la gent que ha format part de la nostra vida. Volem compartir i celebrar aquest moment amb família, amics i totes aquelles persones que formen part de la nostra història.',
+      note: '“Wanted dead or alive, però arribant a temps.”',
     },
     day: {
       eyebrow: 'El dia',
-      title: 'Un ritme senzill, sense córrer.',
+      title: 'El pla',
       intro:
-        'La jornada està pensada perquè tot respiri: arribar amb calma, compartir taula, allargar la tarda i acabar ballant.',
+        'La idea és senzilla: passar-ho bé. No hi ha codi de vestimenta, així que vine com vulguis, però una mica arreglat (jajaja, és broma).',
       timeline: [
         {
           time: '13:00',
@@ -170,7 +168,7 @@ export const copy: Record<Locale, Copy> = {
     travel: {
       eyebrow: 'Com arribar',
       title: 'Mas Llombart, a tocar de Barcelona.',
-      body: 'La finca és a Sant Fost de Campsentelles, en una zona tranquil·la i verda. És prou a prop per arribar fàcil i prou apartada perquè el dia tingui el seu propi ritme.',
+      body: 'La finca és a Sant Fost de Campsentelles, a prop de Barcelona, en un lloc tranquil i només per a nosaltres.',
       address: 'Avda. de la Conreria, 16 · 08105 Sant Fost de Campsentelles, Barcelona',
       action: 'Obrir a Google Maps',
       tips: [
@@ -179,8 +177,8 @@ export const copy: Record<Locale, Copy> = {
           text: 'L’opció més simple si vens des de Barcelona o rodalia.',
         },
         {
-          title: 'Arribeu amb marge',
-          text: 'La idea és començar tranquils, sense entrar corrents a la cerimònia.',
+          title: 'Pàrquing',
+          text: 'Hi ha zona per aparcar a la finca.',
         },
         {
           title: 'Novembre',
@@ -189,8 +187,8 @@ export const copy: Record<Locale, Copy> = {
       ],
     },
     rsvp: {
-      eyebrow: 'RSVP',
-      title: 'Confirmeu-nos si veniu abans del 10 de juny.',
+      eyebrow: 'Confirma la teva assistència',
+      title: 'Confirma i explica’ns els detalls',
       body: 'Si tens alguna al·lèrgia, intolerància o segueixes una dieta especial, indica-ho aquí per traslladar-ho correctament a la finca.',
       name: 'Nom i cognoms',
       attendance: 'Podràs venir?',

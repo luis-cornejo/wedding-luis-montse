@@ -9,7 +9,6 @@ export type Copy = {
     gallery: string;
   };
   hero: {
-    eyebrow: string;
     title: string;
     subtitle: string;
     date: string;
