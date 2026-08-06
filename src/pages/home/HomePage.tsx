@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import { copy } from '../../application/content/copy';
-import { supabase } from '../../application/lib/supabase';
 import GlobalStyle from '../../application/styles/GlobalStyle';
 import type { Locale, RsvpInvitationSummary } from '../../application/types';
+import { getRsvpInvitation } from '../../common/api-connector';
 import { SiteFooter, SiteHeader } from '../../common/components/layout';
 import { Main, PageShell } from '../../common/components/ui';
 import { useCountdown } from '../../common/hooks/useCountdown';
@@ -21,11 +21,6 @@ type Props = {
   rsvpToken: string | null;
 };
 
-const isInvitationSummary = (
-  value: unknown,
-): value is { group_name: string; submitted_at: string | null } =>
-  Boolean(value && typeof value === 'object' && 'group_name' in value && 'submitted_at' in value);
-
 export default function HomePage({ rsvpToken }: Props) {
   const [locale, setLocale] = useState<Locale>('es');
   const [invitation, setInvitation] = useState<RsvpInvitationSummary | null>(null);
@@ -33,12 +28,12 @@ export default function HomePage({ rsvpToken }: Props) {
   const countdownItems = useCountdown(content.countdown);
 
   useEffect(() => {
-    if (!rsvpToken || !supabase) {
+    if (!rsvpToken) {
       return;
     }
 
-    void supabase.rpc('get_rsvp_invitation', { p_token: rsvpToken }).then(({ data, error }) => {
-      if (error || !isInvitationSummary(data)) {
+    void getRsvpInvitation(rsvpToken).then((data) => {
+      if (!data) {
         return;
       }
 

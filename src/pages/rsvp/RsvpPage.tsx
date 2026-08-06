@@ -1,8 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { rsvpFormCopy } from '../../application/content/rsvp';
-import { supabase } from '../../application/lib/supabase';
 import GlobalStyle from '../../application/styles/GlobalStyle';
+import {
+  getRsvpInvitation,
+  submitRsvpInvitation,
+  type RsvpGuest,
+  type RsvpGuestResponse,
+  type RsvpInvitation,
+} from '../../common/api-connector';
 
 import {
   BackLink,
@@ -25,32 +31,9 @@ import {
   SecondaryButton,
 } from './RsvpPage.styled';
 
-type Attendance = 'attending' | 'declined';
-
-type Guest = {
-  allergy_details: string | null;
-  attendance: Attendance | 'pending';
-  dietary_options: string[];
-  full_name: string;
-  id: string;
-  notes: string | null;
-};
-
-type Invitation = {
-  contact_name: string | null;
-  contact_phone: string | null;
-  group_name: string;
-  guests: Guest[];
-};
-
-type GuestResponse = Omit<Guest, 'full_name'> & { attendance: Attendance };
-
 const getToken = () => new URLSearchParams(window.location.search).get('token');
 
-const isInvitation = (value: unknown): value is Invitation =>
-  Boolean(value && typeof value === 'object' && 'group_name' in value && 'guests' in value);
-
-const makeGuestResponse = (guest: Guest): GuestResponse => ({
+const makeGuestResponse = (guest: RsvpGuest): RsvpGuestResponse => ({
   allergy_details: guest.allergy_details,
   attendance: guest.attendance === 'pending' ? 'attending' : guest.attendance,
   dietary_options: guest.dietary_options,
@@ -60,9 +43,9 @@ const makeGuestResponse = (guest: Guest): GuestResponse => ({
 
 export default function RsvpPage() {
   const token = useMemo(() => getToken(), []);
-  const [invitation, setInvitation] = useState<Invitation | null>(null);
+  const [invitation, setInvitation] = useState<RsvpInvitation | null>(null);
   const [expandedGuests, setExpandedGuests] = useState<Record<string, boolean>>({});
-  const [responses, setResponses] = useState<Record<string, GuestResponse>>({});
+  const [responses, setResponses] = useState<Record<string, RsvpGuestResponse>>({});
   const [contactName, setContactName] = useState('');
   const [contactPhone, setContactPhone] = useState('');
   const [status, setStatus] = useState<'error' | 'idle' | 'loading' | 'saved' | 'saving'>(
@@ -70,12 +53,12 @@ export default function RsvpPage() {
   );
 
   useEffect(() => {
-    if (!token || !supabase) {
+    if (!token) {
       return;
     }
 
-    void supabase.rpc('get_rsvp_invitation', { p_token: token }).then(({ data, error }) => {
-      if (error || !isInvitation(data)) {
+    void getRsvpInvitation(token).then((data) => {
+      if (!data) {
         setStatus('error');
         return;
       }
@@ -90,7 +73,7 @@ export default function RsvpPage() {
     });
   }, [token]);
 
-  const updateResponse = (id: string, update: Partial<GuestResponse>) => {
+  const updateResponse = (id: string, update: Partial<RsvpGuestResponse>) => {
     setResponses((current) => ({ ...current, [id]: { ...current[id], ...update } }));
   };
 
@@ -104,21 +87,21 @@ export default function RsvpPage() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!supabase || !token || !invitation) {
+    if (!token || !invitation) {
       return;
     }
 
     setStatus('saving');
-    const { error } = await supabase.rpc('submit_rsvp_invitation', {
-      p_contact_name: contactName,
-      p_contact_phone: contactPhone,
-      p_guests: invitation.guests.map((guest) => responses[guest.id]),
-      p_token: token,
+    const hasSubmitted = await submitRsvpInvitation({
+      contactName,
+      contactPhone,
+      guests: invitation.guests.map((guest) => responses[guest.id]),
+      token,
     });
-    setStatus(error ? 'error' : 'saved');
+    setStatus(hasSubmitted ? 'saved' : 'error');
   };
 
-  const unavailable = !supabase || !token;
+  const unavailable = !token;
 
   return (
     <>

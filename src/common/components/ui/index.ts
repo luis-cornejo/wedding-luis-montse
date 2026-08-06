@@ -1,3 +1,3 @@
-export { default as Countdown } from './Countdown';
-export { default as InfoPopover } from './InfoPopover';
-export * from './SectionPrimitives';
+export { default as Countdown } from './countdown';
+export { default as InfoPopover } from './info-popover';
+export * from './section-primitives';
