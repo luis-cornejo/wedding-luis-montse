@@ -38,11 +38,21 @@ export const Deadline = styled.div`
   box-shadow: var(--shadow-soft);
 `;
 
-export const Card = styled.form`
+export const Card = styled.div`
   padding: clamp(1.6rem, 4vw, 3rem);
   border-radius: 2.8rem;
   background: rgb(255 255 255 / 0.9);
   box-shadow: var(--shadow);
+`;
+
+export const RsvpLink = styled.a`
+  display: inline-block;
+  margin-top: 1.4rem;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  padding: 0.9rem 1.2rem;
+  font-weight: 700;
 `;
 
 export const Field = styled.div`

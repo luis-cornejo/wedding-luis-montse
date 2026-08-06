@@ -98,6 +98,14 @@ export const copy: Record<Locale, Copy> = {
       otherPlaceholder: 'Datos sobre otras valoraciones',
       detailHint:
         'Añade aquí alergias, intolerancias o dietas especiales reales. Mejor no incluir gustos personales.',
+      privateLink:
+        'La confirmación se realiza desde el enlace personal incluido en vuestra invitación.',
+      privateLinkAction: 'Abrir confirmación',
+      personalizedGreeting: 'Hola, {groupName}',
+      personalizedPending:
+        'Tu invitación está lista. Desde aquí puedes confirmar la asistencia de vuestro grupo.',
+      personalizedSubmitted:
+        'Ya hemos guardado vuestra confirmación. Puedes revisarla o modificarla cuando lo necesites.',
       send: 'Enviar confirmación',
       deadline: 'Nos ayuda mucho tener la respuesta cuanto antes.',
     },
@@ -206,6 +214,13 @@ export const copy: Record<Locale, Copy> = {
       otherPlaceholder: 'Dades sobre altres valoracions',
       detailHint:
         'Afegeix aquí al·lèrgies, intoleràncies o dietes especials reals. Millor no incloure gustos personals.',
+      privateLink: 'La confirmació es fa des de l’enllaç personal inclòs a la vostra invitació.',
+      privateLinkAction: 'Obrir confirmació',
+      personalizedGreeting: 'Hola, {groupName}',
+      personalizedPending:
+        'La vostra invitació ja està a punt. Des d’aquí podeu confirmar l’assistència del vostre grup.',
+      personalizedSubmitted:
+        'Ja hem desat la vostra confirmació. La podeu revisar o modificar quan ho necessiteu.',
       send: 'Enviar confirmació',
       deadline: 'Ens ajuda molt tenir la resposta tan aviat com pugueu.',
     },

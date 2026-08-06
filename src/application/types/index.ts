@@ -60,6 +60,11 @@ export type Copy = {
     other: string;
     otherPlaceholder: string;
     detailHint: string;
+    privateLink: string;
+    privateLinkAction: string;
+    personalizedGreeting: string;
+    personalizedPending: string;
+    personalizedSubmitted: string;
     send: string;
     deadline: string;
   };
@@ -77,4 +82,9 @@ export type CountdownState = {
   hours: number;
   minutes: number;
   seconds: number;
+};
+
+export type RsvpInvitationSummary = {
+  groupName: string;
+  hasSubmitted: boolean;
 };
