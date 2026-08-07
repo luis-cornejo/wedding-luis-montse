@@ -3,6 +3,7 @@ export type AdminInvitation = {
   guest_count: number;
   has_submitted: boolean;
   id: string;
+  is_sent: boolean;
   updated_at: string;
 };
 
@@ -31,6 +32,7 @@ export type AdminInvitationDetail = {
   group_name: string;
   guests: AdminGuest[];
   id: string;
+  locale: 'ca' | 'es';
   submitted_at: string | null;
   token: string;
 };

@@ -1,4 +1,14 @@
-import { Copy, Download, ExternalLink, Pencil, Plus, Trash2, X } from 'lucide-react';
+import {
+  Check,
+  ChevronDown,
+  Copy,
+  Download,
+  ExternalLink,
+  Pencil,
+  Plus,
+  Trash2,
+  X,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { adminCopy } from '../../../../application/content/admin';
@@ -7,6 +17,7 @@ import {
   deleteAdminInvitation,
   getAdminInvitation,
   getAdminRsvpExport,
+  setAdminInvitationSent,
   updateAdminInvitation,
   type AdminInvitationDetail,
   type AdminRsvpOverview,
@@ -33,8 +44,10 @@ import {
   ModalBackdrop,
   ModalHeader,
   OpenButton,
+  SentCheckbox,
   Status,
   SecondaryAction,
+  SelectControl,
   Summary,
   Table,
   TableActions,
@@ -62,10 +75,13 @@ const escapeCsvValue = (value: string) => `"${value.replace(/"/g, '""')}"`;
 export default function AdminDashboard({ email, onRefresh, onSignOut, overview }: Props) {
   const [detail, setDetail] = useState<AdminInvitationDetail | null>(null);
   const [contactPhone, setContactPhone] = useState('');
+  const [copiedToken, setCopiedToken] = useState<string | null>(null);
+  const [locale, setLocale] = useState<'ca' | 'es'>('es');
   const [editingInvitation, setEditingInvitation] = useState<AdminInvitationDetail | null>(null);
   const [groupName, setGroupName] = useState('');
   const [editGroupName, setEditGroupName] = useState('');
   const [editContactPhone, setEditContactPhone] = useState('');
+  const [editLocale, setEditLocale] = useState<'ca' | 'es'>('es');
   const [editGuestName, setEditGuestName] = useState('');
   const [editGuests, setEditGuests] = useState<Array<{ full_name: string; id?: string }>>([]);
   const [guestName, setGuestName] = useState('');
@@ -74,6 +90,7 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [sendingInvitationId, setSendingInvitationId] = useState<string | null>(null);
 
   const metrics = [
     { label: adminCopy.total, value: overview.totals.total },
@@ -98,6 +115,15 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  useEffect(() => {
+    if (!copiedToken) {
+      return undefined;
+    }
+
+    const timeoutId = window.setTimeout(() => setCopiedToken(null), 2000);
+    return () => window.clearTimeout(timeoutId);
+  }, [copiedToken]);
+
   const selectInvitation = async (invitationId: string) => {
     setHasDetailError(false);
     const currentDetail = await getAdminInvitation(invitationId);
@@ -112,7 +138,7 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
   const handleCreateInvitation = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsCreating(true);
-    const created = await createAdminInvitation(groupName, guestNames, contactPhone);
+    const created = await createAdminInvitation(groupName, guestNames, contactPhone, locale);
     setIsCreating(false);
 
     if (!created) {
@@ -121,6 +147,7 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
 
     setGroupName('');
     setContactPhone('');
+    setLocale('es');
     setGuestNames([]);
     setIsCreateOpen(false);
     setDetail(await getAdminInvitation(created.id));
@@ -129,6 +156,17 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
 
   const copyLink = async (token: string) => {
     await navigator.clipboard.writeText(getInvitationLink(token));
+    setCopiedToken(token);
+  };
+
+  const toggleInvitationSent = async (invitationId: string, isSent: boolean) => {
+    setSendingInvitationId(invitationId);
+    const updated = await setAdminInvitationSent(invitationId, isSent);
+    setSendingInvitationId(null);
+
+    if (updated) {
+      await onRefresh();
+    }
   };
 
   const exportCsv = async () => {
@@ -192,6 +230,7 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
   const startEditing = (invitation: AdminInvitationDetail) => {
     setEditGroupName(invitation.group_name);
     setEditContactPhone(invitation.contact_phone ?? '');
+    setEditLocale(invitation.locale === 'ca' ? 'ca' : 'es');
     setEditGuests(invitation.guests.map((guest) => ({ full_name: guest.full_name, id: guest.id })));
     setEditGuestName('');
     setEditingInvitation(invitation);
@@ -237,6 +276,7 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
       groupName: editGroupName,
       guests: editGuests,
       invitationId: editingInvitation.id,
+      locale: editLocale,
     });
     setIsCreating(false);
 
@@ -291,6 +331,7 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
               <tr>
                 <th>{adminCopy.group}</th>
                 <th>{adminCopy.guests}</th>
+                <th>{adminCopy.invitationSent}</th>
                 <th>{adminCopy.submitted}</th>
                 <th>{adminCopy.updated}</th>
                 <th>{adminCopy.actions}</th>
@@ -305,6 +346,17 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
                     </OpenButton>
                   </td>
                   <td>{invitation.guest_count}</td>
+                  <td>
+                    <SentCheckbox
+                      aria-label={`${adminCopy.invitationSent}: ${invitation.group_name}`}
+                      checked={invitation.is_sent}
+                      disabled={sendingInvitationId === invitation.id}
+                      onChange={(event) =>
+                        void toggleInvitationSent(invitation.id, event.target.checked)
+                      }
+                      type="checkbox"
+                    />
+                  </td>
                   <td>
                     <Status $submitted={invitation.has_submitted}>
                       {invitation.has_submitted ? adminCopy.submitted : adminCopy.pending}
@@ -377,6 +429,19 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
                   value={contactPhone}
                 />
               </label>
+              <label>
+                {adminCopy.invitationLanguage}
+                <SelectControl>
+                  <select
+                    onChange={(event) => setLocale(event.target.value as 'ca' | 'es')}
+                    value={locale}
+                  >
+                    <option value="es">{adminCopy.languageEs}</option>
+                    <option value="ca">{adminCopy.languageCa}</option>
+                  </select>
+                  <ChevronDown aria-hidden="true" />
+                </SelectControl>
+              </label>
               <GuestSection>
                 <h3>{adminCopy.guestNames}</h3>
                 {guestNames.length > 0 && (
@@ -448,8 +513,12 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
               </CloseButton>
             </ModalHeader>
             <ActionButton onClick={() => void copyLink(detail.token)} type="button">
-              <Copy aria-hidden="true" size={16} />
-              {adminCopy.copyLink}
+              {copiedToken === detail.token ? (
+                <Check aria-hidden="true" size={16} />
+              ) : (
+                <Copy aria-hidden="true" size={16} />
+              )}
+              {copiedToken === detail.token ? adminCopy.linkCopied : adminCopy.copyLink}
             </ActionButton>
             <Link href={getInvitationLink(detail.token)} rel="noreferrer" target="_blank">
               {getInvitationLink(detail.token)} <ExternalLink aria-hidden="true" size={15} />
@@ -517,6 +586,19 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
                   type="tel"
                   value={editContactPhone}
                 />
+              </label>
+              <label>
+                {adminCopy.invitationLanguage}
+                <SelectControl>
+                  <select
+                    onChange={(event) => setEditLocale(event.target.value as 'ca' | 'es')}
+                    value={editLocale}
+                  >
+                    <option value="es">{adminCopy.languageEs}</option>
+                    <option value="ca">{adminCopy.languageCa}</option>
+                  </select>
+                  <ChevronDown aria-hidden="true" />
+                </SelectControl>
               </label>
               <GuestSection>
                 <h3>{adminCopy.guestNames}</h3>

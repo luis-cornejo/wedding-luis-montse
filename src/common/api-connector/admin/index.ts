@@ -52,6 +52,7 @@ export async function createAdminInvitation(
   groupName: string,
   guestNames: string[],
   contactPhone: string,
+  locale: 'ca' | 'es',
 ): Promise<CreatedInvitation | null> {
   if (!supabase) {
     return null;
@@ -61,6 +62,7 @@ export async function createAdminInvitation(
     p_group_name: groupName,
     p_guest_names: guestNames,
     p_contact_phone: contactPhone,
+    p_locale: locale,
   });
 
   return error || !isCreatedInvitation(data) ? null : data;
@@ -73,6 +75,21 @@ export async function deleteAdminInvitation(invitationId: string): Promise<boole
 
   const { error } = await supabase.rpc('delete_admin_invitation', {
     p_invitation_id: invitationId,
+  });
+  return !error;
+}
+
+export async function setAdminInvitationSent(
+  invitationId: string,
+  isSent: boolean,
+): Promise<boolean> {
+  if (!supabase) {
+    return false;
+  }
+
+  const { error } = await supabase.rpc('set_admin_invitation_sent', {
+    p_invitation_id: invitationId,
+    p_is_sent: isSent,
   });
   return !error;
 }
@@ -91,6 +108,7 @@ type UpdateAdminInvitationArgs = {
   groupName: string;
   guests: Array<{ full_name: string; id?: string }>;
   invitationId: string;
+  locale: 'ca' | 'es';
 };
 
 export async function updateAdminInvitation({
@@ -98,6 +116,7 @@ export async function updateAdminInvitation({
   groupName,
   guests,
   invitationId,
+  locale,
 }: UpdateAdminInvitationArgs): Promise<boolean> {
   if (!supabase) {
     return false;
@@ -108,6 +127,7 @@ export async function updateAdminInvitation({
     p_guests: guests,
     p_invitation_id: invitationId,
     p_contact_phone: contactPhone,
+    p_locale: locale,
   });
   return !error;
 }

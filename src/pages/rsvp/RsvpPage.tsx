@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { rsvpFormCopy } from '../../application/content/rsvp';
 import GlobalStyle from '../../application/styles/GlobalStyle';
+import type { Locale } from '../../application/types';
 import {
   getRsvpInvitation,
   submitRsvpInvitation,
@@ -44,6 +45,7 @@ const makeGuestResponse = (guest: RsvpGuest): RsvpGuestResponse => ({
 export default function RsvpPage() {
   const token = useMemo(() => getToken(), []);
   const [invitation, setInvitation] = useState<RsvpInvitation | null>(null);
+  const [locale, setLocale] = useState<Locale>('es');
   const [expandedGuests, setExpandedGuests] = useState<Record<string, boolean>>({});
   const [responses, setResponses] = useState<Record<string, RsvpGuestResponse>>({});
   const [status, setStatus] = useState<'error' | 'idle' | 'loading' | 'saved' | 'saving'>(
@@ -62,6 +64,7 @@ export default function RsvpPage() {
       }
 
       setInvitation(data);
+      setLocale(data.locale === 'ca' ? 'ca' : 'es');
       setResponses(
         Object.fromEntries(data.guests.map((guest) => [guest.id, makeGuestResponse(guest)])),
       );
@@ -96,31 +99,32 @@ export default function RsvpPage() {
   };
 
   const unavailable = !token;
+  const content = rsvpFormCopy[locale];
 
   return (
     <>
       <GlobalStyle />
       <Page>
-        <BackLink href={`/?token=${encodeURIComponent(token ?? '')}`}>Volver a la boda</BackLink>
+        <BackLink href={`/?token=${encodeURIComponent(token ?? '')}`}>{content.back}</BackLink>
         <Heading>
-          <h1>{rsvpFormCopy.title}</h1>
+          <h1>{content.title}</h1>
           {invitation && <InvitationGroup>{invitation.group_name}</InvitationGroup>}
-          <p>{rsvpFormCopy.details}</p>
+          <p>{content.details}</p>
         </Heading>
 
-        {(status === 'loading' || status === 'saving') && <Notice>{rsvpFormCopy.loading}</Notice>}
+        {(status === 'loading' || status === 'saving') && <Notice>{content.loading}</Notice>}
         {(status === 'error' || unavailable) && (
-          <Notice>{unavailable ? rsvpFormCopy.invalidLink : rsvpFormCopy.error}</Notice>
+          <Notice>{unavailable ? content.invalidLink : content.error}</Notice>
         )}
         {status === 'saved' && (
           <SuccessPanel>
-            <h2>{rsvpFormCopy.saved}</h2>
+            <h2>{content.saved}</h2>
             <SuccessActions>
               <SecondaryButton onClick={() => setStatus('idle')} type="button">
-                {rsvpFormCopy.savedEdit}
+                {content.savedEdit}
               </SecondaryButton>
               <ReturnLink href={`/?token=${encodeURIComponent(token ?? '')}`}>
-                {rsvpFormCopy.savedReturn}
+                {content.savedReturn}
               </ReturnLink>
             </SuccessActions>
           </SuccessPanel>
@@ -137,7 +141,7 @@ export default function RsvpPage() {
                 <GuestCard key={guest.id}>
                   <GuestName>{guest.full_name}</GuestName>
                   <Field>
-                    {rsvpFormCopy.attendance}
+                    {content.attendance}
                     <ChoiceRow>
                       <Choice>
                         <input
@@ -146,7 +150,7 @@ export default function RsvpPage() {
                           onChange={() => updateResponse(guest.id, { attendance: 'attending' })}
                           type="radio"
                         />
-                        {rsvpFormCopy.yes}
+                        {content.yes}
                       </Choice>
                       <Choice>
                         <input
@@ -155,7 +159,7 @@ export default function RsvpPage() {
                           onChange={() => updateResponse(guest.id, { attendance: 'declined' })}
                           type="radio"
                         />
-                        {rsvpFormCopy.no}
+                        {content.no}
                       </Choice>
                     </ChoiceRow>
                   </Field>
@@ -171,11 +175,11 @@ export default function RsvpPage() {
                       }}
                       open={expandedGuests[guest.id] ?? hasExtraDetails}
                     >
-                      <summary>{rsvpFormCopy.extraDetails}</summary>
+                      <summary>{content.extraDetails}</summary>
                       <Field as="div">
-                        {rsvpFormCopy.dietary}
+                        {content.dietary}
                         <DietaryChoices>
-                          {rsvpFormCopy.dietaryOptions.map((option) => (
+                          {content.dietaryOptions.map((option) => (
                             <Choice key={option}>
                               <input
                                 checked={response.dietary_options.includes(option)}
@@ -188,22 +192,22 @@ export default function RsvpPage() {
                         </DietaryChoices>
                       </Field>
                       <Field>
-                        {rsvpFormCopy.allergy}
+                        {content.allergy}
                         <textarea
                           onChange={(event) =>
                             updateResponse(guest.id, { allergy_details: event.target.value })
                           }
-                          placeholder={rsvpFormCopy.allergyPlaceholder}
+                          placeholder={content.allergyPlaceholder}
                           value={response.allergy_details ?? ''}
                         />
                       </Field>
                       <Field>
-                        {rsvpFormCopy.notes}
+                        {content.notes}
                         <textarea
                           onChange={(event) =>
                             updateResponse(guest.id, { notes: event.target.value })
                           }
-                          placeholder={rsvpFormCopy.notesPlaceholder}
+                          placeholder={content.notesPlaceholder}
                           value={response.notes ?? ''}
                         />
                       </Field>
@@ -214,7 +218,7 @@ export default function RsvpPage() {
             })}
 
             <SubmitButton disabled={status === 'saving'} type="submit">
-              {status === 'saving' ? rsvpFormCopy.saving : rsvpFormCopy.send}
+              {status === 'saving' ? content.saving : content.send}
             </SubmitButton>
           </Form>
         )}

@@ -258,6 +258,7 @@ export const Form = styled.form`
   }
 
   input,
+  select,
   textarea {
     width: 100%;
     margin-top: 0.45rem;
@@ -271,6 +272,32 @@ export const Form = styled.form`
   textarea {
     min-height: 150px;
     resize: vertical;
+  }
+`;
+
+export const SelectControl = styled.div`
+  position: relative;
+  margin-top: 0.45rem;
+
+  select {
+    min-height: 3rem;
+    margin-top: 0;
+    appearance: none;
+    font: inherit;
+    font-size: 1rem;
+    line-height: 1.4;
+    padding: 0.8rem 3rem 0.8rem 1rem;
+  }
+
+  svg {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    width: 1.15rem;
+    height: 1.15rem;
+    transform: translateY(-50%);
+    color: var(--primary);
+    pointer-events: none;
   }
 `;
 
@@ -358,4 +385,17 @@ export const Table = styled.table`
 export const Status = styled.span<{ $submitted: boolean }>`
   color: ${({ $submitted }) => ($submitted ? '#28633e' : '#8a5c00')};
   font-weight: 700;
+`;
+
+export const SentCheckbox = styled.input`
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: 0;
+  accent-color: var(--primary);
+  cursor: pointer;
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.55;
+  }
 `;

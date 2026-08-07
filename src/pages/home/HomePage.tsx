@@ -38,6 +38,7 @@ export default function HomePage({ rsvpToken }: Props) {
       }
 
       setInvitation({ groupName: data.group_name, hasSubmitted: Boolean(data.submitted_at) });
+      setLocale(data.locale === 'ca' ? 'ca' : 'es');
     });
   }, [rsvpToken]);
 
