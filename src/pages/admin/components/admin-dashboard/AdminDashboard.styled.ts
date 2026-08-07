@@ -128,6 +128,35 @@ export const OpenButton = styled.button`
   cursor: pointer;
 `;
 
+export const RowToggle = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--primary);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--surface-soft);
+  }
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.55;
+  }
+`;
+
+export const GroupCell = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+`;
+
 export const IconButton = styled.button`
   display: inline-flex;
   align-items: center;
@@ -365,6 +394,7 @@ export const Link = styled.a`
 
 export const Table = styled.table`
   width: 100%;
+  min-width: 860px;
   border-collapse: collapse;
   background: var(--surface-card);
 
@@ -382,9 +412,97 @@ export const Table = styled.table`
   }
 `;
 
+export const TableScroll = styled.div`
+  width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding-bottom: 0.35rem;
+
+  &::-webkit-scrollbar {
+    height: 0.55rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgb(53 64 16 / 0.26);
+  }
+`;
+
 export const Status = styled.span<{ $submitted: boolean }>`
   color: ${({ $submitted }) => ($submitted ? '#28633e' : '#8a5c00')};
   font-weight: 700;
+`;
+
+export const ExpandedRow = styled.tr`
+  td {
+    padding: 0;
+    border-bottom: 1px solid var(--outline);
+    background: rgb(53 64 16 / 0.035);
+  }
+`;
+
+export const GuestDetailTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  th,
+  td {
+    padding: 0.75rem 1rem;
+    border: 0;
+    border-top: 1px solid rgb(53 64 16 / 0.1);
+    text-align: left;
+    vertical-align: top;
+    overflow-wrap: anywhere;
+  }
+
+  th {
+    border-top: 0;
+    color: var(--muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  td {
+    font-size: 0.9rem;
+  }
+
+  th:first-child,
+  td:first-child {
+    width: 20%;
+  }
+
+  th:nth-child(2),
+  td:nth-child(2) {
+    width: 14%;
+  }
+
+  td:first-child {
+    color: var(--primary);
+    font-weight: 700;
+  }
+`;
+
+export const GuestAttendance = styled.span<{ $status: 'attending' | 'declined' | 'pending' }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: ${({ $status }) => {
+    if ($status === 'attending') {
+      return '#28633e';
+    }
+
+    if ($status === 'declined') {
+      return '#9f2737';
+    }
+
+    return '#8a5c00';
+  }};
+  font-weight: 700;
+
+  svg {
+    flex: 0 0 auto;
+  }
 `;
 
 export const SentCheckbox = styled.input`

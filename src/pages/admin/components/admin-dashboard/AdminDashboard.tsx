@@ -1,5 +1,6 @@
 import {
   Check,
+  CircleDashed,
   ChevronDown,
   Copy,
   Download,
@@ -9,7 +10,7 @@ import {
   Trash2,
   X,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 import { adminCopy } from '../../../../application/content/admin';
 import {
@@ -27,8 +28,12 @@ import {
   ActionButton,
   AccountActions,
   CloseButton,
+  ExpandedRow,
   Form,
+  GroupCell,
   GuestList,
+  GuestDetailTable,
+  GuestAttendance,
   GuestInputRow,
   GuestMeta,
   GuestSection,
@@ -44,6 +49,7 @@ import {
   ModalBackdrop,
   ModalHeader,
   OpenButton,
+  RowToggle,
   SentCheckbox,
   Status,
   SecondaryAction,
@@ -51,6 +57,7 @@ import {
   Summary,
   Table,
   TableActions,
+  TableScroll,
   TableSection,
 } from './AdminDashboard.styled';
 
@@ -74,6 +81,7 @@ const escapeCsvValue = (value: string) => `"${value.replace(/"/g, '""')}"`;
 
 export default function AdminDashboard({ email, onRefresh, onSignOut, overview }: Props) {
   const [detail, setDetail] = useState<AdminInvitationDetail | null>(null);
+  const [expandedInvitation, setExpandedInvitation] = useState<AdminInvitationDetail | null>(null);
   const [contactPhone, setContactPhone] = useState('');
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [locale, setLocale] = useState<'ca' | 'es'>('es');
@@ -90,6 +98,7 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [expandingInvitationId, setExpandingInvitationId] = useState<string | null>(null);
   const [sendingInvitationId, setSendingInvitationId] = useState<string | null>(null);
 
   const metrics = [
@@ -133,6 +142,24 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
     }
 
     setDetail(currentDetail);
+  };
+
+  const toggleGuests = async (invitationId: string) => {
+    if (expandedInvitation?.id === invitationId) {
+      setExpandedInvitation(null);
+      return;
+    }
+
+    setExpandingInvitationId(invitationId);
+    const currentDetail = await getAdminInvitation(invitationId);
+    setExpandingInvitationId(null);
+
+    if (!currentDetail) {
+      setHasDetailError(true);
+      return;
+    }
+
+    setExpandedInvitation(currentDetail);
   };
 
   const handleCreateInvitation = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -326,67 +353,137 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
         {overview.invitations.length === 0 ? (
           <p>{adminCopy.empty}</p>
         ) : (
-          <Table>
-            <thead>
-              <tr>
-                <th>{adminCopy.group}</th>
-                <th>{adminCopy.guests}</th>
-                <th>{adminCopy.invitationSent}</th>
-                <th>{adminCopy.submitted}</th>
-                <th>{adminCopy.updated}</th>
-                <th>{adminCopy.actions}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {overview.invitations.map((invitation) => (
-                <tr key={invitation.id}>
-                  <td>
-                    <OpenButton onClick={() => void selectInvitation(invitation.id)} type="button">
-                      {invitation.group_name}
-                    </OpenButton>
-                  </td>
-                  <td>{invitation.guest_count}</td>
-                  <td>
-                    <SentCheckbox
-                      aria-label={`${adminCopy.invitationSent}: ${invitation.group_name}`}
-                      checked={invitation.is_sent}
-                      disabled={sendingInvitationId === invitation.id}
-                      onChange={(event) =>
-                        void toggleInvitationSent(invitation.id, event.target.checked)
-                      }
-                      type="checkbox"
-                    />
-                  </td>
-                  <td>
-                    <Status $submitted={invitation.has_submitted}>
-                      {invitation.has_submitted ? adminCopy.submitted : adminCopy.pending}
-                    </Status>
-                  </td>
-                  <td>{new Intl.DateTimeFormat('es-ES').format(new Date(invitation.updated_at))}</td>
-                  <td>
-                    <IconActions>
-                      <IconButton
-                        aria-label={adminCopy.editInvitation}
-                        onClick={() => void openEditInvitation(invitation.id)}
-                        title={adminCopy.editInvitation}
-                        type="button"
-                      >
-                        <Pencil aria-hidden="true" size={16} />
-                      </IconButton>
-                      <IconButton
-                        aria-label={adminCopy.deleteInvitation}
-                        onClick={() => void deleteInvitation(invitation.id)}
-                        title={adminCopy.deleteInvitation}
-                        type="button"
-                      >
-                        <Trash2 aria-hidden="true" size={16} />
-                      </IconButton>
-                    </IconActions>
-                  </td>
+          <TableScroll>
+            <Table>
+              <thead>
+                <tr>
+                  <th>{adminCopy.group}</th>
+                  <th>{adminCopy.guests}</th>
+                  <th>{adminCopy.invitationSent}</th>
+                  <th>{adminCopy.submitted}</th>
+                  <th>{adminCopy.updated}</th>
+                  <th>{adminCopy.actions}</th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {overview.invitations.map((invitation) => {
+                  const isExpanded = expandedInvitation?.id === invitation.id;
+
+                  return (
+                    <Fragment key={invitation.id}>
+                      <tr>
+                        <td>
+                          <GroupCell>
+                            <RowToggle
+                              aria-expanded={isExpanded}
+                              aria-label={isExpanded ? adminCopy.hideGuests : adminCopy.showGuests}
+                              disabled={expandingInvitationId === invitation.id}
+                              onClick={() => void toggleGuests(invitation.id)}
+                              title={isExpanded ? adminCopy.hideGuests : adminCopy.showGuests}
+                              type="button"
+                            >
+                              <ChevronDown
+                                aria-hidden="true"
+                                size={18}
+                                style={{ transform: isExpanded ? undefined : 'rotate(-90deg)' }}
+                              />
+                            </RowToggle>
+                            <OpenButton
+                              onClick={() => void selectInvitation(invitation.id)}
+                              type="button"
+                            >
+                              {invitation.group_name}
+                            </OpenButton>
+                          </GroupCell>
+                        </td>
+                        <td>{invitation.guest_count}</td>
+                        <td>
+                          <SentCheckbox
+                            aria-label={`${adminCopy.invitationSent}: ${invitation.group_name}`}
+                            checked={invitation.is_sent}
+                            disabled={sendingInvitationId === invitation.id}
+                            onChange={(event) =>
+                              void toggleInvitationSent(invitation.id, event.target.checked)
+                            }
+                            type="checkbox"
+                          />
+                        </td>
+                        <td>
+                          <Status $submitted={invitation.has_submitted}>
+                            {invitation.has_submitted ? adminCopy.submitted : adminCopy.pending}
+                          </Status>
+                        </td>
+                        <td>
+                          {new Intl.DateTimeFormat('es-ES').format(new Date(invitation.updated_at))}
+                        </td>
+                        <td>
+                          <IconActions>
+                            <IconButton
+                              aria-label={adminCopy.editInvitation}
+                              onClick={() => void openEditInvitation(invitation.id)}
+                              title={adminCopy.editInvitation}
+                              type="button"
+                            >
+                              <Pencil aria-hidden="true" size={16} />
+                            </IconButton>
+                            <IconButton
+                              aria-label={adminCopy.deleteInvitation}
+                              onClick={() => void deleteInvitation(invitation.id)}
+                              title={adminCopy.deleteInvitation}
+                              type="button"
+                            >
+                              <Trash2 aria-hidden="true" size={16} />
+                            </IconButton>
+                          </IconActions>
+                        </td>
+                      </tr>
+                      {isExpanded && (
+                        <ExpandedRow>
+                          <td colSpan={6}>
+                            <GuestDetailTable>
+                              <thead>
+                                <tr>
+                                  <th>{adminCopy.guestName}</th>
+                                  <th>{adminCopy.attendance}</th>
+                                  <th>{adminCopy.dietary}</th>
+                                  <th>{adminCopy.allergies}</th>
+                                  <th>{adminCopy.observations}</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {expandedInvitation.guests.map((guest) => (
+                                  <tr key={guest.id}>
+                                    <td>{guest.full_name}</td>
+                                    <td>
+                                      <GuestAttendance $status={guest.attendance}>
+                                        {guest.attendance === 'attending' ? (
+                                          <Check aria-hidden="true" size={16} />
+                                        ) : guest.attendance === 'declined' ? (
+                                          <X aria-hidden="true" size={16} />
+                                        ) : (
+                                          <CircleDashed aria-hidden="true" size={16} />
+                                        )}
+                                        {attendanceLabels[guest.attendance]}
+                                      </GuestAttendance>
+                                    </td>
+                                    <td>
+                                      {guest.dietary_options.join(', ') || adminCopy.noDetails}
+                                    </td>
+                                    <td>{guest.allergy_details || adminCopy.noDetails}</td>
+                                    <td>{guest.notes || adminCopy.noDetails}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </GuestDetailTable>
+                          </td>
+                        </ExpandedRow>
+                      )}
+                    </Fragment>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </TableScroll>
         )}
         {hasDetailError && <p>{adminCopy.detailError}</p>}
       </TableSection>
