@@ -14,7 +14,6 @@ import {
   BackLink,
   Choice,
   ChoiceRow,
-  ContactCard,
   DietaryChoices,
   ExtraDetails,
   Field,
@@ -22,6 +21,7 @@ import {
   GuestCard,
   GuestName,
   Heading,
+  InvitationGroup,
   Notice,
   Page,
   ReturnLink,
@@ -46,8 +46,6 @@ export default function RsvpPage() {
   const [invitation, setInvitation] = useState<RsvpInvitation | null>(null);
   const [expandedGuests, setExpandedGuests] = useState<Record<string, boolean>>({});
   const [responses, setResponses] = useState<Record<string, RsvpGuestResponse>>({});
-  const [contactName, setContactName] = useState('');
-  const [contactPhone, setContactPhone] = useState('');
   const [status, setStatus] = useState<'error' | 'idle' | 'loading' | 'saved' | 'saving'>(
     token ? 'loading' : 'error',
   );
@@ -64,8 +62,6 @@ export default function RsvpPage() {
       }
 
       setInvitation(data);
-      setContactName(data.contact_name ?? '');
-      setContactPhone(data.contact_phone ?? '');
       setResponses(
         Object.fromEntries(data.guests.map((guest) => [guest.id, makeGuestResponse(guest)])),
       );
@@ -93,8 +89,6 @@ export default function RsvpPage() {
 
     setStatus('saving');
     const hasSubmitted = await submitRsvpInvitation({
-      contactName,
-      contactPhone,
       guests: invitation.guests.map((guest) => responses[guest.id]),
       token,
     });
@@ -110,7 +104,7 @@ export default function RsvpPage() {
         <BackLink href={`/?token=${encodeURIComponent(token ?? '')}`}>Volver a la boda</BackLink>
         <Heading>
           <h1>{rsvpFormCopy.title}</h1>
-          {invitation && <p>{invitation.group_name}</p>}
+          {invitation && <InvitationGroup>{invitation.group_name}</InvitationGroup>}
           <p>{rsvpFormCopy.details}</p>
         </Heading>
 
@@ -218,26 +212,6 @@ export default function RsvpPage() {
                 </GuestCard>
               );
             })}
-
-            <ContactCard>
-              <Field>
-                {rsvpFormCopy.contactName}
-                <input
-                  onChange={(event) => setContactName(event.target.value)}
-                  value={contactName}
-                />
-              </Field>
-              <Field>
-                {rsvpFormCopy.contactPhone}
-                <input
-                  autoComplete="tel"
-                  inputMode="tel"
-                  onChange={(event) => setContactPhone(event.target.value)}
-                  type="tel"
-                  value={contactPhone}
-                />
-              </Field>
-            </ContactCard>
 
             <SubmitButton disabled={status === 'saving'} type="submit">
               {status === 'saving' ? rsvpFormCopy.saving : rsvpFormCopy.send}

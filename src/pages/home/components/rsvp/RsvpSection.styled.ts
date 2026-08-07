@@ -29,12 +29,16 @@ export const Deadline = styled.div`
   position: absolute;
   right: 0;
   bottom: 0;
+  display: grid;
+  place-items: center;
   max-width: 280px;
   padding: 1rem 1.15rem;
   border-radius: 999px;
   background: rgb(189 233 255 / 0.9);
   color: #105871;
   font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
   box-shadow: var(--shadow-soft);
 `;
 

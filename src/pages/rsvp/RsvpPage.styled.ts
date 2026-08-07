@@ -31,6 +31,16 @@ export const Heading = styled.header`
   }
 `;
 
+export const InvitationGroup = styled.p`
+  && {
+    margin: 0.9rem 0 0;
+    color: var(--primary);
+    font-family: 'Noto Serif', Georgia, serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+`;
+
 export const Notice = styled.div`
   padding: 1.25rem;
   border-radius: 8px;
@@ -175,15 +185,8 @@ export const DietaryChoices = styled.div`
   margin-top: 0.55rem;
 `;
 
-export const ContactCard = styled.div`
-  padding: clamp(1.25rem, 3vw, 2rem);
-  border-radius: 8px;
-  background: var(--surface-card);
-  box-shadow: var(--shadow-soft);
-`;
-
 export const SubmitButton = styled.button`
-  justify-self: start;
+  justify-self: end;
   border: 0;
   border-radius: 8px;
   background: var(--primary);

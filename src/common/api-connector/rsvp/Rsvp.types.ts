@@ -12,16 +12,12 @@ export type RsvpGuest = {
 export type RsvpGuestResponse = Omit<RsvpGuest, 'full_name'> & { attendance: Attendance };
 
 export type RsvpInvitation = {
-  contact_name: string | null;
-  contact_phone: string | null;
   group_name: string;
   guests: RsvpGuest[];
   submitted_at?: string | null;
 };
 
 export type SubmitRsvpInvitationArgs = {
-  contactName: string;
-  contactPhone: string;
   guests: RsvpGuestResponse[];
   token: string;
 };

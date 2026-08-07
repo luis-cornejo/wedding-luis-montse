@@ -17,8 +17,6 @@ export async function getRsvpInvitation(token: string): Promise<RsvpInvitation |
 }
 
 export async function submitRsvpInvitation({
-  contactName,
-  contactPhone,
   guests,
   token,
 }: SubmitRsvpInvitationArgs): Promise<boolean> {
@@ -27,8 +25,6 @@ export async function submitRsvpInvitation({
   }
 
   const { error } = await supabase.rpc('submit_rsvp_invitation', {
-    p_contact_name: contactName,
-    p_contact_phone: contactPhone,
     p_guests: guests,
     p_token: token,
   });

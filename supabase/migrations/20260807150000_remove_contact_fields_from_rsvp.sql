@@ -1,40 +1,3 @@
-create extension if not exists pgcrypto;
-
-create type public.attendance_status as enum ('pending', 'attending', 'declined');
-
-create table public.invitations (
-  id uuid primary key default gen_random_uuid(),
-  token uuid not null unique default gen_random_uuid(),
-  group_name text not null,
-  contact_name text,
-  contact_phone text,
-  submitted_at timestamptz,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
-
-create table public.guests (
-  id uuid primary key default gen_random_uuid(),
-  invitation_id uuid not null references public.invitations(id) on delete cascade,
-  full_name text not null,
-  sort_order integer not null default 0,
-  attendance public.attendance_status not null default 'pending',
-  dietary_options text[] not null default '{}',
-  allergy_details text,
-  notes text,
-  updated_at timestamptz not null default now()
-);
-
-create index guests_invitation_id_idx on public.guests(invitation_id);
-
-alter table public.invitations enable row level security;
-alter table public.guests enable row level security;
-
--- The browser cannot select or write either table directly. It only calls the
--- two functions below, each of which scopes access to the invitation token.
-revoke all on public.invitations from anon, authenticated;
-revoke all on public.guests from anon, authenticated;
-
 create or replace function public.get_rsvp_invitation(p_token uuid)
 returns jsonb
 language plpgsql
@@ -46,8 +9,6 @@ declare
 begin
   select jsonb_build_object(
     'group_name', invitation.group_name,
-    'contact_name', invitation.contact_name,
-    'contact_phone', invitation.contact_phone,
     'submitted_at', invitation.submitted_at,
     'guests', coalesce(
       jsonb_agg(
@@ -73,12 +34,9 @@ begin
 end;
 $$;
 
-create or replace function public.submit_rsvp_invitation(
-  p_token uuid,
-  p_contact_name text,
-  p_contact_phone text,
-  p_guests jsonb
-)
+drop function if exists public.submit_rsvp_invitation(uuid, text, text, jsonb);
+
+create function public.submit_rsvp_invitation(p_token uuid, p_guests jsonb)
 returns void
 language plpgsql
 security definer
@@ -93,18 +51,12 @@ begin
     raise exception 'Invalid guest response';
   end if;
 
-  select id into invitation_uuid
-  from public.invitations
-  where token = p_token;
-
+  select id into invitation_uuid from public.invitations where token = p_token;
   if invitation_uuid is null then
     raise exception 'Invitation not found';
   end if;
 
-  select count(*) into expected_guest_count
-  from public.guests
-  where invitation_id = invitation_uuid;
-
+  select count(*) into expected_guest_count from public.guests where invitation_id = invitation_uuid;
   select count(distinct (guest_response.value ->> 'id')::uuid) into submitted_guest_count
   from jsonb_array_elements(p_guests) as guest_response(value);
 
@@ -136,24 +88,10 @@ begin
     and guest.invitation_id = invitation_uuid;
 
   update public.invitations
-  set
-    contact_name = nullif(trim(p_contact_name), ''),
-    contact_phone = nullif(trim(p_contact_phone), ''),
-    submitted_at = now(),
-    updated_at = now()
+  set submitted_at = now(), updated_at = now()
   where id = invitation_uuid;
 end;
 $$;
 
 grant execute on function public.get_rsvp_invitation(uuid) to anon, authenticated;
-grant execute on function public.submit_rsvp_invitation(uuid, text, text, jsonb) to anon, authenticated;
-
--- Example seed data. Run this only after replacing the names, then share the
--- generated link using the token returned by the final select statement.
---
--- insert into public.invitations (group_name) values ('Familia Garcia') returning id, token;
--- insert into public.guests (invitation_id, full_name, sort_order) values
---   ('INVITATION_ID', 'Maria Garcia', 1),
---   ('INVITATION_ID', 'Carlos Lopez', 2);
--- select group_name, token, 'https://TU_DOMINIO/confirmar?token=' || token as invitation_link
--- from public.invitations;
+grant execute on function public.submit_rsvp_invitation(uuid, jsonb) to anon, authenticated;

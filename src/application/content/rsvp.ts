@@ -2,8 +2,6 @@ export const rsvpFormCopy = {
   allergy: 'Alergias o intolerancias',
   allergyPlaceholder: 'Indica cualquier información relevante',
   attendance: '¿Asistirá?',
-  contactPhone: 'Teléfono de contacto',
-  contactName: 'Persona que responde',
   details: 'Completa una respuesta por cada persona incluida en vuestra invitación.',
   dietary: 'Opciones alimentarias',
   dietaryOptions: ['Vegano', 'Vegetariano', 'Celíaco', 'Sin lactosa'],
