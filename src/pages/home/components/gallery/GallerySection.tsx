@@ -33,7 +33,10 @@ export default function GallerySection({ gallery }: Props) {
           <p>{gallery.quote}</p>
         </Quote>
         <Wide>
-          <img src="/images/jardin.png" alt="Espacio del jardín" />
+          <img
+            src="/images/ceremonia-interior-ilustrada.png"
+            alt="Ilustración del espacio interior para la ceremonia"
+          />
         </Wide>
       </Grid>
     </SectionContainer>

@@ -28,7 +28,7 @@ export default function RsvpSection({ invitation, rsvp }: Props) {
     <SectionContainer as={Section} id="rsvp">
       <Visual>
         <Photo src="/images/masia.png" alt="Vista de la finca" />
-        <Deadline>{rsvp.deadline}</Deadline>
+        {(!invitation || !invitation.hasSubmitted) && <Deadline>{rsvp.deadline}</Deadline>}
       </Visual>
 
       <Card>

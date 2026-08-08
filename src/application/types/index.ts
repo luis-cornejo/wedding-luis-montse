@@ -25,7 +25,6 @@ export type Copy = {
     eyebrow: string;
     title: string;
     body: string;
-    note: string;
   };
   day: {
     eyebrow: string;
@@ -40,6 +39,14 @@ export type Copy = {
     address: string;
     action: string;
     tips: Array<{ title: string; text: string }>;
+    weather: {
+      title: string;
+      availableSoon: string;
+      loading: string;
+      unavailable: string;
+      temperature: string;
+      precipitation: string;
+    };
   };
   rsvp: {
     eyebrow: string;

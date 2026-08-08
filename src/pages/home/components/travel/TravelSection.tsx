@@ -5,6 +5,7 @@ import {
   SectionText,
   SectionTitle,
 } from '../../../../common/components/ui';
+import WeatherForecast from '../weather-forecast';
 
 import {
   Address,
@@ -37,6 +38,7 @@ export default function TravelSection({ travel }: Props) {
         >
           {travel.action}
         </SecondaryButton>
+        <WeatherForecast weather={travel.weather} />
       </CopyColumn>
 
       <Aside>

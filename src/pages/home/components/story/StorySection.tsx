@@ -1,14 +1,7 @@
 import type { Copy } from '../../../../application/types';
 import { Eyebrow, SectionText, SectionTitle } from '../../../../common/components/ui';
 
-import {
-  ImageColumn,
-  QuoteCard,
-  Section,
-  StoryFrame,
-  StoryPhoto,
-  TextColumn,
-} from './StorySection.styled';
+import { ImageColumn, Section, StoryFrame, StoryPhoto, TextColumn } from './StorySection.styled';
 
 type Props = {
   story: Copy['story'];
@@ -19,9 +12,11 @@ export default function StorySection({ story }: Props) {
     <Section id="historia">
       <ImageColumn>
         <StoryFrame>
-          <StoryPhoto src="/images/jardin.png" alt="Jardín de la masía" />
+          <StoryPhoto
+            src="/images/celebrarlo-juntos-ilustrada.png"
+            alt="Ilustración de Luis y Montse compartiendo un momento divertido"
+          />
         </StoryFrame>
-        <QuoteCard>{story.note}</QuoteCard>
       </ImageColumn>
       <TextColumn>
         <Eyebrow>{story.eyebrow}</Eyebrow>

@@ -26,27 +26,26 @@ export const copy: Record<Locale, Copy> = {
     story: {
       eyebrow: 'Con los nuestros',
       title: 'Celebrarlo juntos',
-      body: 'Después de tantos años juntos, nos hace ilusión reunir en un mismo día a la gente que ha formado parte de nuestra vida. Queremos compartir y celebrar este momento con familia, amigos y todas esas personas que forman parte de nuestra historia.',
-      note: '“Wanted dead or alive, pero llegando a tiempo.”',
+      body: 'Después de tantos años juntos, nos hace ilusión reunir en un mismo día a la gente que nos ha acompañado a lo largo de la vida. Queremos compartir y celebrar este momento con familia, amigos y todas las personas especiales que han estado a nuestro lado.',
     },
     day: {
       eyebrow: 'El día',
       title: 'El plan',
       intro:
-        'La idea es sencilla: pasarlo bien. No hay código de vestimenta, así que ven como quieras, pero con traje o vestido (jajaja, es broma).',
+        'La idea es sencilla: pasarlo bien. No hay código de vestimenta, así que ven como quieras, pero con traje o vestido (jajaja).',
       timeline: [
         {
-          time: '13:00',
+          time: '12:00',
           title: 'Llegada',
           text: 'Tiempo para saludar, ubicarse y entrar poco a poco en el día.',
         },
         {
-          time: '13:30',
+          time: '12:30',
           title: 'Ceremonia',
           text: 'Una ceremonia breve y cercana, rodeados de quienes importan.',
         },
         {
-          time: '14:30',
+          time: '14:00',
           title: 'Comida',
           text: 'Mesa larga, brindis, sobremesa y conversación sin mirar el reloj.',
         },
@@ -77,11 +76,19 @@ export const copy: Record<Locale, Copy> = {
           text: 'Habrá luz bonita y probablemente fresco al caer la tarde.',
         },
       ],
+      weather: {
+        title: 'El tiempo para el gran día',
+        availableSoon: 'La previsión estará disponible unos días antes de la boda.',
+        loading: 'Cargando previsión...',
+        unavailable: 'No hemos podido cargar la previsión ahora mismo.',
+        temperature: 'Temperatura',
+        precipitation: 'Probabilidad de lluvia',
+      },
     },
     rsvp: {
       eyebrow: 'Confirma tu asistencia',
       title: 'Confirma y cuéntanos los detalles',
-      body: 'Si tienes alguna alergia, intolerancia o sigues una dieta especial, indícanoslo aquí para trasladarlo correctamente a la finca.',
+      body: 'Gracias por confirmar vuestra asistencia. Nos hace muchísima ilusión celebrar este día con vosotros.',
       name: 'Nombre y apellidos',
       attendance: '¿Podrás venir?',
       yes: 'Sí, allí estaré',
@@ -111,9 +118,9 @@ export const copy: Record<Locale, Copy> = {
     },
     gallery: {
       eyebrow: 'Atmósfera',
-      title: 'Jardín, mesa larga, papel cálido y luz baja.',
-      body: 'El tono correcto ya no va de iconos juguetones ni estrellitas. Va de capas suaves, fotos grandes, aire y una composición más editorial.',
-      quote: '“Todo lo importante cabe en una tarde bien contada.”',
+      title: 'Un sitio para celebrar cada momento.',
+      body: 'La ceremonia está pensada para celebrarse al aire libre. Si el tiempo no acompaña, la haremos dentro, en un espacio igual de especial para compartir el momento.',
+      quote: '“Si llueve, no nos mojaremos. Y será igual de bonito.”',
     },
     footer: 'Con cariño, Montse y Luis',
   },
@@ -142,27 +149,26 @@ export const copy: Record<Locale, Copy> = {
     story: {
       eyebrow: 'Amb els nostres',
       title: 'Celebrar-ho junts',
-      body: 'Després de tants anys junts, ens fa il·lusió reunir en un mateix dia la gent que ha format part de la nostra vida. Volem compartir i celebrar aquest moment amb família, amics i totes aquelles persones que formen part de la nostra història.',
-      note: '“Wanted dead or alive, però arribant a temps.”',
+      body: 'Després de tants anys junts, ens fa il·lusió reunir en un mateix dia la gent que ens ha acompanyat al llarg de la vida. Volem compartir i celebrar aquest moment amb família, amics i totes les persones especials que han estat al nostre costat.',
     },
     day: {
       eyebrow: 'El dia',
       title: 'El pla',
       intro:
-        'La idea és senzilla: passar-ho bé. No hi ha codi de vestimenta, així que vine com vulguis, però una mica arreglat (jajaja, és broma).',
+        'La idea és senzilla: passar-ho bé. No hi ha codi de vestimenta, així que vine com vulguis, però una mica arreglat (jajaja).',
       timeline: [
         {
-          time: '13:00',
+          time: '12:00',
           title: 'Arribada',
           text: 'Temps per saludar, ubicar-se i entrar a poc a poc en el dia.',
         },
         {
-          time: '13:30',
+          time: '12:30',
           title: 'Cerimònia',
           text: 'Una cerimònia breu i propera, envoltats de qui importa.',
         },
         {
-          time: '14:30',
+          time: '14:00',
           title: 'Dinar',
           text: 'Taula llarga, brindis, sobretaula i conversa sense mirar el rellotge.',
         },
@@ -193,11 +199,19 @@ export const copy: Record<Locale, Copy> = {
           text: 'Hi haurà una llum bonica i probablement fresca en caure la tarda.',
         },
       ],
+      weather: {
+        title: 'El temps per al gran dia',
+        availableSoon: 'La previsió estarà disponible uns dies abans del casament.',
+        loading: 'Carregant la previsió...',
+        unavailable: 'No hem pogut carregar la previsió ara mateix.',
+        temperature: 'Temperatura',
+        precipitation: 'Probabilitat de pluja',
+      },
     },
     rsvp: {
       eyebrow: 'Confirma la teva assistència',
       title: 'Confirma i explica’ns els detalls',
-      body: 'Si tens alguna al·lèrgia, intolerància o segueixes una dieta especial, indica-ho aquí per traslladar-ho correctament a la finca.',
+      body: 'Gràcies per confirmar la vostra assistència. Ens fa moltíssima il·lusió celebrar aquest dia amb vosaltres.',
       name: 'Nom i cognoms',
       attendance: 'Podràs venir?',
       yes: 'Sí, hi seré',
@@ -226,9 +240,9 @@ export const copy: Record<Locale, Copy> = {
     },
     gallery: {
       eyebrow: 'Atmosfera',
-      title: 'Jardí, taula llarga, paper càlid i llum baixa.',
-      body: 'El to correcte ja no va d’icones juganeres ni estrelletes. Va de capes suaus, fotos grans, aire i una composició més editorial.',
-      quote: '“Tot el que importa cap dins d’una tarda ben explicada.”',
+      title: 'Un lloc per celebrar cada moment.',
+      body: 'La cerimònia està pensada per celebrar-se a l’aire lliure. Si el temps no acompanya, la farem a dins, en un espai igual d’especial per compartir el moment.',
+      quote: '“Si plou, no ens mullarem. I serà igual de bonic.”',
     },
     footer: 'Amb afecte, Montse y Luis',
   },
