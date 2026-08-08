@@ -73,6 +73,10 @@ export async function deleteAdminInvitation(invitationId: string): Promise<boole
     return false;
   }
 
+  if (!(await deleteInvitationImageFile(invitationId))) {
+    return false;
+  }
+
   const { error } = await supabase.rpc('delete_admin_invitation', {
     p_invitation_id: invitationId,
   });
@@ -82,6 +86,17 @@ export async function deleteAdminInvitation(invitationId: string): Promise<boole
 const invitationImageBucket = 'invitation-images';
 
 const getInvitationImagePath = (invitationId: string) => `${invitationId}/cover`;
+
+async function deleteInvitationImageFile(invitationId: string): Promise<boolean> {
+  if (!supabase) {
+    return false;
+  }
+
+  const { error } = await supabase.storage
+    .from(invitationImageBucket)
+    .remove([getInvitationImagePath(invitationId)]);
+  return !error;
+}
 
 export async function uploadInvitationImage(invitationId: string, image: File): Promise<boolean> {
   if (!supabase || image.size > 5 * 1024 * 1024) {
@@ -119,8 +134,19 @@ export async function getInvitationImagePreviewUrl(imagePath: string): Promise<s
   return error || !data ? null : data.signedUrl;
 }
 
-export async function removeInvitationImage(invitationId: string): Promise<boolean> {
+export async function hasInvitationImage(invitationId: string): Promise<boolean> {
   if (!supabase) {
+    return false;
+  }
+
+  const { data, error } = await supabase.storage
+    .from(invitationImageBucket)
+    .list(invitationId, { limit: 1, search: 'cover' });
+  return !error && Boolean(data?.some((file) => file.name === 'cover'));
+}
+
+export async function removeInvitationImage(invitationId: string): Promise<boolean> {
+  if (!supabase || !(await deleteInvitationImageFile(invitationId))) {
     return false;
   }
 

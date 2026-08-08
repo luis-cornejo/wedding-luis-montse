@@ -82,9 +82,82 @@ export const TableSection = styled.section`
 export const TableActions = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 0.75rem;
   margin-bottom: 0.85rem;
+
+  @media (max-width: 680px) {
+    align-items: stretch;
+    flex-direction: column;
+  }
+`;
+
+export const TableActionControls = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+
+  @media (max-width: 460px) {
+    display: grid;
+    grid-template-columns: 1fr;
+
+    button {
+      width: 100%;
+    }
+  }
+`;
+
+export const SearchField = styled.label`
+  display: flex;
+  align-items: center;
+  width: min(100%, 320px);
+  min-height: 2.8rem;
+  gap: 0.55rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--outline);
+  border-radius: 8px;
+  background: var(--surface-card);
+
+  &:focus-within {
+    border-color: var(--primary);
+  }
+
+  > svg {
+    flex: 0 0 auto;
+    color: var(--muted);
+  }
+
+  input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+  }
+
+  @media (max-width: 680px) {
+    width: 100%;
+  }
+`;
+
+export const SearchClearButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--primary);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--surface-soft);
+  }
 `;
 
 export const ActionButton = styled.button`
@@ -117,6 +190,25 @@ export const SecondaryAction = styled.button`
   padding: 0.7rem 0.9rem;
   font-weight: 700;
   cursor: pointer;
+`;
+
+export const DangerAction = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 0;
+  border-radius: 8px;
+  background: #8a2634;
+  color: #fff;
+  padding: 0.75rem 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.55;
+  }
 `;
 
 export const OpenButton = styled.button`
@@ -155,6 +247,32 @@ export const GroupCell = styled.div`
   display: flex;
   align-items: center;
   gap: 0.45rem;
+`;
+
+export const ImageStatus = styled.button`
+  display: grid;
+  width: 2.7rem;
+  height: 2rem;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--secondary);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--surface-soft);
+  }
+`;
+
+export const ImageModalPreview = styled.img`
+  display: block;
+  width: 100%;
+  max-height: min(680px, calc(100vh - 11rem));
+  margin-top: 1rem;
+  border-radius: 8px;
+  background: var(--surface-soft);
+  object-fit: contain;
 `;
 
 export const IconButton = styled.button`
@@ -260,6 +378,13 @@ export const ModalHeader = styled.header`
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
+`;
+
+export const ModalActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
 `;
 
 export const CloseButton = styled.button`
@@ -508,7 +633,7 @@ export const Link = styled.a`
 
 export const Table = styled.table`
   width: 100%;
-  min-width: 860px;
+  min-width: 930px;
   border-collapse: collapse;
   background: var(--surface-card);
 
@@ -523,6 +648,11 @@ export const Table = styled.table`
     color: var(--muted);
     font-size: 0.8rem;
     text-transform: uppercase;
+  }
+
+  th:nth-child(2),
+  td:nth-child(2) {
+    width: 4.5rem;
   }
 `;
 

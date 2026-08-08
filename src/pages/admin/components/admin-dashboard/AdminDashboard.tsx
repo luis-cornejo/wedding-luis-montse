@@ -5,9 +5,11 @@ import {
   Copy,
   Download,
   ExternalLink,
+  Image,
   ImagePlus,
   Pencil,
   Plus,
+  Search,
   Trash2,
   X,
 } from 'lucide-react';
@@ -20,6 +22,7 @@ import {
   getAdminInvitation,
   getAdminRsvpExport,
   getInvitationImagePreviewUrl,
+  hasInvitationImage,
   removeInvitationImage,
   setAdminInvitationSent,
   uploadInvitationImage,
@@ -32,12 +35,15 @@ import {
   ActionButton,
   AccountActions,
   CloseButton,
+  DangerAction,
   ExpandedRow,
   Form,
   GroupCell,
   ImageClearButton,
   ImageField,
+  ImageModalPreview,
   ImagePicker,
+  ImageStatus,
   GuestList,
   GuestDetailTable,
   GuestAttendance,
@@ -55,10 +61,13 @@ import {
   LogoutButton,
   Metric,
   Modal,
+  ModalActions,
   ModalBackdrop,
   ModalHeader,
   OpenButton,
   RowToggle,
+  SearchClearButton,
+  SearchField,
   SentCheckbox,
   Status,
   SecondaryAction,
@@ -66,6 +75,7 @@ import {
   Summary,
   Table,
   TableActions,
+  TableActionControls,
   TableScroll,
   TableSection,
 } from './AdminDashboard.styled';
@@ -90,10 +100,19 @@ const escapeCsvValue = (value: string) => `"${value.replace(/"/g, '""')}"`;
 
 export default function AdminDashboard({ email, onRefresh, onSignOut, overview }: Props) {
   const [detail, setDetail] = useState<AdminInvitationDetail | null>(null);
+  const [invitationToDelete, setInvitationToDelete] = useState<{
+    groupName: string;
+    id: string;
+  } | null>(null);
   const [expandedInvitation, setExpandedInvitation] = useState<AdminInvitationDetail | null>(null);
   const [contactPhone, setContactPhone] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [invitationImageIds, setInvitationImageIds] = useState<string[]>([]);
+  const [selectedInvitationImage, setSelectedInvitationImage] = useState<{
+    groupName: string;
+    url: string;
+  } | null>(null);
   const [isImageDragging, setIsImageDragging] = useState(false);
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [locale, setLocale] = useState<'ca' | 'es'>('es');
@@ -113,8 +132,10 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [isDeletingInvitation, setIsDeletingInvitation] = useState(false);
   const [expandingInvitationId, setExpandingInvitationId] = useState<string | null>(null);
   const [sendingInvitationId, setSendingInvitationId] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const metrics = [
     { label: adminCopy.total, value: overview.totals.total },
@@ -122,6 +143,12 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
     { label: adminCopy.pending, value: overview.totals.pending },
     { label: adminCopy.declined, value: overview.totals.declined },
   ];
+
+  const filteredInvitations = overview.invitations.filter((invitation) =>
+    invitation.group_name
+      .toLocaleLowerCase('es')
+      .includes(searchTerm.trim().toLocaleLowerCase('es')),
+  );
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -133,6 +160,8 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
       setIsEditOpen(false);
       setDetail(null);
       setEditingInvitation(null);
+      setSelectedInvitationImage(null);
+      setInvitationToDelete(null);
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -147,6 +176,27 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
     const timeoutId = window.setTimeout(() => setCopiedToken(null), 2000);
     return () => window.clearTimeout(timeoutId);
   }, [copiedToken]);
+
+  useEffect(() => {
+    let isActive = true;
+
+    void Promise.all(
+      overview.invitations.map(
+        async (invitation): Promise<[string, boolean]> => [
+          invitation.id,
+          await hasInvitationImage(invitation.id),
+        ],
+      ),
+    ).then((results) => {
+      if (isActive) {
+        setInvitationImageIds(results.filter(([, hasImage]) => hasImage).map(([id]) => id));
+      }
+    });
+
+    return () => {
+      isActive = false;
+    };
+  }, [overview.invitations]);
 
   const updateImagePreview = (
     image: File | null,
@@ -182,6 +232,13 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
     }
 
     setDetail(currentDetail);
+  };
+
+  const openInvitationImage = async (groupName: string, imagePath: string) => {
+    const imageUrl = await getInvitationImagePreviewUrl(imagePath);
+    if (imageUrl) {
+      setSelectedInvitationImage({ groupName, url: imageUrl });
+    }
   };
 
   const toggleGuests = async (invitationId: string) => {
@@ -281,14 +338,15 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
   };
 
   const deleteInvitation = async (invitationId: string) => {
-    if (!window.confirm(adminCopy.deleteConfirmation)) {
-      return;
-    }
+    setIsDeletingInvitation(true);
 
     if (await deleteAdminInvitation(invitationId)) {
       setDetail(null);
+      setInvitationToDelete(null);
       await onRefresh();
     }
+
+    setIsDeletingInvitation(false);
   };
 
   const addGuest = () => {
@@ -402,23 +460,48 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
 
       <TableSection>
         <TableActions>
-          <SecondaryAction onClick={() => void exportCsv()} type="button">
-            <Download aria-hidden="true" size={16} />
-            {adminCopy.exportCsv}
-          </SecondaryAction>
-          <ActionButton onClick={() => setIsCreateOpen(true)} type="button">
-            <Plus aria-hidden="true" size={16} />
-            {adminCopy.createInvitation}
-          </ActionButton>
+          <SearchField>
+            <Search aria-hidden="true" size={18} />
+            <input
+              aria-label={adminCopy.searchInvitations}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder={adminCopy.searchInvitations}
+              type="text"
+              value={searchTerm}
+            />
+            {searchTerm && (
+              <SearchClearButton
+                aria-label={adminCopy.close}
+                onClick={() => setSearchTerm('')}
+                title={adminCopy.close}
+                type="button"
+              >
+                <X aria-hidden="true" size={16} />
+              </SearchClearButton>
+            )}
+          </SearchField>
+          <TableActionControls>
+            <SecondaryAction onClick={() => void exportCsv()} type="button">
+              <Download aria-hidden="true" size={16} />
+              {adminCopy.exportCsv}
+            </SecondaryAction>
+            <ActionButton onClick={() => setIsCreateOpen(true)} type="button">
+              <Plus aria-hidden="true" size={16} />
+              {adminCopy.createInvitation}
+            </ActionButton>
+          </TableActionControls>
         </TableActions>
         {overview.invitations.length === 0 ? (
           <p>{adminCopy.empty}</p>
+        ) : filteredInvitations.length === 0 ? (
+          <p>{adminCopy.noSearchResults}</p>
         ) : (
           <TableScroll>
             <Table>
               <thead>
                 <tr>
                   <th>{adminCopy.group}</th>
+                  <th>{adminCopy.tableImage}</th>
                   <th>{adminCopy.guests}</th>
                   <th>{adminCopy.invitationSent}</th>
                   <th>{adminCopy.submitted}</th>
@@ -427,7 +510,7 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
                 </tr>
               </thead>
               <tbody>
-                {overview.invitations.map((invitation) => {
+                {filteredInvitations.map((invitation) => {
                   const isExpanded = expandedInvitation?.id === invitation.id;
 
                   return (
@@ -456,6 +539,23 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
                               {invitation.group_name}
                             </OpenButton>
                           </GroupCell>
+                        </td>
+                        <td>
+                          {invitationImageIds.includes(invitation.id) && (
+                            <ImageStatus
+                              aria-label={`${adminCopy.tableImage}: ${invitation.group_name}`}
+                              onClick={() =>
+                                void openInvitationImage(
+                                  invitation.group_name,
+                                  `${invitation.id}/cover`,
+                                )
+                              }
+                              title={adminCopy.tableImage}
+                              type="button"
+                            >
+                              <Image aria-hidden="true" size={18} />
+                            </ImageStatus>
+                          )}
                         </td>
                         <td>{invitation.guest_count}</td>
                         <td>
@@ -489,7 +589,12 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
                             </IconButton>
                             <IconButton
                               aria-label={adminCopy.deleteInvitation}
-                              onClick={() => void deleteInvitation(invitation.id)}
+                              onClick={() =>
+                                setInvitationToDelete({
+                                  groupName: invitation.group_name,
+                                  id: invitation.id,
+                                })
+                              }
                               title={adminCopy.deleteInvitation}
                               type="button"
                             >
@@ -500,7 +605,7 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
                       </tr>
                       {isExpanded && (
                         <ExpandedRow>
-                          <td colSpan={6}>
+                          <td colSpan={7}>
                             <GuestDetailTable>
                               <thead>
                                 <tr>
@@ -747,6 +852,77 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
                 </li>
               ))}
             </GuestList>
+          </Modal>
+        </ModalBackdrop>
+      )}
+
+      {invitationToDelete && (
+        <ModalBackdrop
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !isDeletingInvitation) {
+              setInvitationToDelete(null);
+            }
+          }}
+        >
+          <Modal aria-modal="true" role="dialog">
+            <ModalHeader>
+              <h2>{adminCopy.deleteTitle}</h2>
+              <CloseButton
+                aria-label={adminCopy.close}
+                disabled={isDeletingInvitation}
+                onClick={() => setInvitationToDelete(null)}
+                type="button"
+              >
+                <X aria-hidden="true" size={18} />
+              </CloseButton>
+            </ModalHeader>
+            <p>
+              {invitationToDelete.groupName}. {adminCopy.deleteConfirmation}
+            </p>
+            <ModalActions>
+              <SecondaryAction
+                disabled={isDeletingInvitation}
+                onClick={() => setInvitationToDelete(null)}
+                type="button"
+              >
+                {adminCopy.cancel}
+              </SecondaryAction>
+              <DangerAction
+                disabled={isDeletingInvitation}
+                onClick={() => void deleteInvitation(invitationToDelete.id)}
+                type="button"
+              >
+                <Trash2 aria-hidden="true" size={16} />
+                {adminCopy.confirmDelete}
+              </DangerAction>
+            </ModalActions>
+          </Modal>
+        </ModalBackdrop>
+      )}
+
+      {selectedInvitationImage && (
+        <ModalBackdrop
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setSelectedInvitationImage(null);
+            }
+          }}
+        >
+          <Modal aria-modal="true" role="dialog">
+            <ModalHeader>
+              <h2>{selectedInvitationImage.groupName}</h2>
+              <CloseButton
+                aria-label={adminCopy.close}
+                onClick={() => setSelectedInvitationImage(null)}
+                type="button"
+              >
+                <X aria-hidden="true" size={18} />
+              </CloseButton>
+            </ModalHeader>
+            <ImageModalPreview
+              alt={`${adminCopy.tableImage}: ${selectedInvitationImage.groupName}`}
+              src={selectedInvitationImage.url}
+            />
           </Modal>
         </ModalBackdrop>
       )}
