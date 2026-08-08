@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { copy } from '../../application/content/copy';
 import GlobalStyle from '../../application/styles/GlobalStyle';
 import type { Locale, RsvpInvitationSummary } from '../../application/types';
-import { getRsvpInvitation } from '../../common/api-connector';
+import { getInvitationImageUrl, getRsvpInvitation } from '../../common/api-connector';
 import { SiteFooter, SiteHeader } from '../../common/components/layout';
 import { Main, PageShell } from '../../common/components/ui';
 import { useCountdown } from '../../common/hooks/useCountdown';
@@ -37,7 +37,11 @@ export default function HomePage({ rsvpToken }: Props) {
         return;
       }
 
-      setInvitation({ groupName: data.group_name, hasSubmitted: Boolean(data.submitted_at) });
+      setInvitation({
+        groupName: data.group_name,
+        hasSubmitted: Boolean(data.submitted_at),
+        imageUrl: data.has_image ? (getInvitationImageUrl(rsvpToken) ?? undefined) : undefined,
+      });
       setLocale(data.locale === 'ca' ? 'ca' : 'es');
     });
   }, [rsvpToken]);

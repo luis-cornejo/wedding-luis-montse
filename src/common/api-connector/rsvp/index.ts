@@ -16,6 +16,14 @@ export async function getRsvpInvitation(token: string): Promise<RsvpInvitation |
   return error || !isRsvpInvitation(data) ? null : data;
 }
 
+export function getInvitationImageUrl(token: string): string | null {
+  if (!supabase) {
+    return null;
+  }
+
+  return `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/invitation-image?token=${encodeURIComponent(token)}`;
+}
+
 export async function submitRsvpInvitation({
   guests,
   token,

@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import type { Copy } from '../../../../application/types';
 import {
   Eyebrow,
@@ -12,12 +14,16 @@ type Props = {
   invitation?: {
     groupName: string;
     hasSubmitted: boolean;
+    imageUrl?: string;
     token: string;
   };
   rsvp: Copy['rsvp'];
 };
 
 export default function RsvpSection({ invitation, rsvp }: Props) {
+  const [hasImageError, setHasImageError] = useState(false);
+  const imageUrl =
+    !hasImageError && invitation?.imageUrl ? invitation.imageUrl : '/images/masia.png';
   const personalizedBody = invitation
     ? invitation.hasSubmitted
       ? rsvp.personalizedSubmitted
@@ -27,7 +33,16 @@ export default function RsvpSection({ invitation, rsvp }: Props) {
   return (
     <SectionContainer as={Section} id="rsvp">
       <Visual>
-        <Photo src="/images/masia.png" alt="Vista de la finca" />
+        <Photo
+          $isPersonalized={Boolean(invitation?.imageUrl && !hasImageError)}
+          alt={
+            invitation?.imageUrl
+              ? `Imagen de la invitación de ${invitation.groupName}`
+              : 'Vista de la finca'
+          }
+          onError={() => setHasImageError(true)}
+          src={imageUrl}
+        />
         {(!invitation || !invitation.hasSubmitted) && <Deadline>{rsvp.deadline}</Deadline>}
       </Visual>
 

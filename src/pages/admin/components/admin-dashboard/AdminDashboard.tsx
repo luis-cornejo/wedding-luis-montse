@@ -5,6 +5,7 @@ import {
   Copy,
   Download,
   ExternalLink,
+  ImagePlus,
   Pencil,
   Plus,
   Trash2,
@@ -18,7 +19,10 @@ import {
   deleteAdminInvitation,
   getAdminInvitation,
   getAdminRsvpExport,
+  getInvitationImagePreviewUrl,
+  removeInvitationImage,
   setAdminInvitationSent,
+  uploadInvitationImage,
   updateAdminInvitation,
   type AdminInvitationDetail,
   type AdminRsvpOverview,
@@ -31,6 +35,9 @@ import {
   ExpandedRow,
   Form,
   GroupCell,
+  ImageClearButton,
+  ImageField,
+  ImagePicker,
   GuestList,
   GuestDetailTable,
   GuestAttendance,
@@ -40,6 +47,8 @@ import {
   GuestTag,
   GuestTags,
   Header,
+  ImagePreview,
+  ImageUpload,
   IconActions,
   IconButton,
   Link,
@@ -83,6 +92,9 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
   const [detail, setDetail] = useState<AdminInvitationDetail | null>(null);
   const [expandedInvitation, setExpandedInvitation] = useState<AdminInvitationDetail | null>(null);
   const [contactPhone, setContactPhone] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isImageDragging, setIsImageDragging] = useState(false);
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [locale, setLocale] = useState<'ca' | 'es'>('es');
   const [editingInvitation, setEditingInvitation] = useState<AdminInvitationDetail | null>(null);
@@ -92,6 +104,9 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
   const [editLocale, setEditLocale] = useState<'ca' | 'es'>('es');
   const [editGuestName, setEditGuestName] = useState('');
   const [editGuests, setEditGuests] = useState<Array<{ full_name: string; id?: string }>>([]);
+  const [editImageFile, setEditImageFile] = useState<File | null>(null);
+  const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
+  const [isEditImageRemoved, setIsEditImageRemoved] = useState(false);
   const [guestName, setGuestName] = useState('');
   const [guestNames, setGuestNames] = useState<string[]>([]);
   const [hasDetailError, setHasDetailError] = useState(false);
@@ -133,6 +148,31 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
     return () => window.clearTimeout(timeoutId);
   }, [copiedToken]);
 
+  const updateImagePreview = (
+    image: File | null,
+    setFile: (file: File | null) => void,
+    setPreview: React.Dispatch<React.SetStateAction<string | null>>,
+  ) => {
+    setFile(image);
+    setPreview((currentPreview) => {
+      if (currentPreview?.startsWith('blob:')) {
+        URL.revokeObjectURL(currentPreview);
+      }
+
+      return image ? URL.createObjectURL(image) : null;
+    });
+  };
+
+  const handleImageDrop = (
+    event: React.DragEvent<HTMLElement>,
+    setFile: (file: File | null) => void,
+    setPreview: React.Dispatch<React.SetStateAction<string | null>>,
+  ) => {
+    event.preventDefault();
+    setIsImageDragging(false);
+    updateImagePreview(event.dataTransfer.files.item(0), setFile, setPreview);
+  };
+
   const selectInvitation = async (invitationId: string) => {
     setHasDetailError(false);
     const currentDetail = await getAdminInvitation(invitationId);
@@ -166,16 +206,23 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
     event.preventDefault();
     setIsCreating(true);
     const created = await createAdminInvitation(groupName, guestNames, contactPhone, locale);
-    setIsCreating(false);
 
     if (!created) {
+      setIsCreating(false);
       return;
     }
+
+    if (imageFile) {
+      await uploadInvitationImage(created.id, imageFile);
+    }
+
+    setIsCreating(false);
 
     setGroupName('');
     setContactPhone('');
     setLocale('es');
     setGuestNames([]);
+    updateImagePreview(null, setImageFile, setImagePreview);
     setIsCreateOpen(false);
     setDetail(await getAdminInvitation(created.id));
     await onRefresh();
@@ -260,6 +307,11 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
     setEditLocale(invitation.locale === 'ca' ? 'ca' : 'es');
     setEditGuests(invitation.guests.map((guest) => ({ full_name: guest.full_name, id: guest.id })));
     setEditGuestName('');
+    setIsEditImageRemoved(false);
+    updateImagePreview(null, setEditImageFile, setEditImagePreview);
+    if (invitation.image_path) {
+      void getInvitationImagePreviewUrl(invitation.image_path).then(setEditImagePreview);
+    }
     setEditingInvitation(invitation);
     setIsEditOpen(true);
   };
@@ -305,14 +357,23 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
       invitationId: editingInvitation.id,
       locale: editLocale,
     });
-    setIsCreating(false);
-
     if (!hasUpdated) {
+      setIsCreating(false);
       return;
     }
 
+    if (editImageFile) {
+      await uploadInvitationImage(editingInvitation.id, editImageFile);
+    } else if (isEditImageRemoved) {
+      await removeInvitationImage(editingInvitation.id);
+    }
+
+    setIsCreating(false);
+
     setIsEditOpen(false);
     setEditingInvitation(null);
+    updateImagePreview(null, setEditImageFile, setEditImagePreview);
+    setIsEditImageRemoved(false);
     await onRefresh();
   };
 
@@ -539,6 +600,54 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
                   <ChevronDown aria-hidden="true" />
                 </SelectControl>
               </label>
+              <ImageField>
+                {adminCopy.invitationImage}
+                <ImageUpload
+                  $hasImage={Boolean(imagePreview)}
+                  $isDragging={isImageDragging}
+                  onDragLeave={() => setIsImageDragging(false)}
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    setIsImageDragging(true);
+                  }}
+                  onDrop={(event) => handleImageDrop(event, setImageFile, setImagePreview)}
+                >
+                  {imagePreview && <ImagePreview alt="" src={imagePreview} />}
+                  <ImagePicker
+                    $isOverlay={Boolean(imagePreview)}
+                    title={adminCopy.invitationImageAction}
+                  >
+                    <input
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={(event) =>
+                        updateImagePreview(
+                          event.target.files?.[0] ?? null,
+                          setImageFile,
+                          setImagePreview,
+                        )
+                      }
+                      type="file"
+                    />
+                    <ImagePlus aria-hidden="true" size={22} />
+                    {!imagePreview && (
+                      <span>
+                        <strong>{adminCopy.invitationImageAction}</strong>
+                        {adminCopy.invitationImageHint}
+                      </span>
+                    )}
+                  </ImagePicker>
+                  {imagePreview && (
+                    <ImageClearButton
+                      aria-label={adminCopy.removeInvitationImage}
+                      onClick={() => updateImagePreview(null, setImageFile, setImagePreview)}
+                      title={adminCopy.removeInvitationImage}
+                      type="button"
+                    >
+                      <Trash2 aria-hidden="true" size={18} />
+                    </ImageClearButton>
+                  )}
+                </ImageUpload>
+              </ImageField>
               <GuestSection>
                 <h3>{adminCopy.guestNames}</h3>
                 {guestNames.length > 0 && (
@@ -697,6 +806,63 @@ export default function AdminDashboard({ email, onRefresh, onSignOut, overview }
                   <ChevronDown aria-hidden="true" />
                 </SelectControl>
               </label>
+              <ImageField>
+                {adminCopy.invitationImage}
+                <ImageUpload
+                  $hasImage={Boolean(editImagePreview)}
+                  $isDragging={isImageDragging}
+                  onDragLeave={() => setIsImageDragging(false)}
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    setIsImageDragging(true);
+                  }}
+                  onDrop={(event) => {
+                    setIsEditImageRemoved(false);
+                    handleImageDrop(event, setEditImageFile, setEditImagePreview);
+                  }}
+                >
+                  {editImagePreview && (
+                    <ImagePreview alt={adminCopy.invitationImage} src={editImagePreview} />
+                  )}
+                  <ImagePicker
+                    $isOverlay={Boolean(editImagePreview)}
+                    title={adminCopy.invitationImageAction}
+                  >
+                    <input
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={(event) => {
+                        setIsEditImageRemoved(false);
+                        updateImagePreview(
+                          event.target.files?.[0] ?? null,
+                          setEditImageFile,
+                          setEditImagePreview,
+                        );
+                      }}
+                      type="file"
+                    />
+                    <ImagePlus aria-hidden="true" size={22} />
+                    {!editImagePreview && (
+                      <span>
+                        <strong>{adminCopy.invitationImageAction}</strong>
+                        {adminCopy.invitationImageHint}
+                      </span>
+                    )}
+                  </ImagePicker>
+                  {editImagePreview && (
+                    <ImageClearButton
+                      aria-label={adminCopy.removeInvitationImage}
+                      onClick={() => {
+                        updateImagePreview(null, setEditImageFile, setEditImagePreview);
+                        setIsEditImageRemoved(true);
+                      }}
+                      title={adminCopy.removeInvitationImage}
+                      type="button"
+                    >
+                      <Trash2 aria-hidden="true" size={18} />
+                    </ImageClearButton>
+                  )}
+                </ImageUpload>
+              </ImageField>
               <GuestSection>
                 <h3>{adminCopy.guestNames}</h3>
                 <GuestTags>

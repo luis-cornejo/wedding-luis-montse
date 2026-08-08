@@ -79,6 +79,57 @@ export async function deleteAdminInvitation(invitationId: string): Promise<boole
   return !error;
 }
 
+const invitationImageBucket = 'invitation-images';
+
+const getInvitationImagePath = (invitationId: string) => `${invitationId}/cover`;
+
+export async function uploadInvitationImage(invitationId: string, image: File): Promise<boolean> {
+  if (!supabase || image.size > 5 * 1024 * 1024) {
+    return false;
+  }
+
+  const imagePath = getInvitationImagePath(invitationId);
+  const { error: uploadError } = await supabase.storage
+    .from(invitationImageBucket)
+    .upload(imagePath, image, {
+      cacheControl: '3600',
+      contentType: image.type,
+      upsert: true,
+    });
+
+  if (uploadError) {
+    return false;
+  }
+
+  const { error } = await supabase.rpc('set_admin_invitation_image', {
+    p_image_path: imagePath,
+    p_invitation_id: invitationId,
+  });
+  return !error;
+}
+
+export async function getInvitationImagePreviewUrl(imagePath: string): Promise<string | null> {
+  if (!supabase) {
+    return null;
+  }
+
+  const { data, error } = await supabase.storage
+    .from(invitationImageBucket)
+    .createSignedUrl(imagePath, 60 * 10);
+  return error || !data ? null : data.signedUrl;
+}
+
+export async function removeInvitationImage(invitationId: string): Promise<boolean> {
+  if (!supabase) {
+    return false;
+  }
+
+  const { error } = await supabase.rpc('clear_admin_invitation_image', {
+    p_invitation_id: invitationId,
+  });
+  return !error;
+}
+
 export async function setAdminInvitationSent(
   invitationId: string,
   isSent: boolean,

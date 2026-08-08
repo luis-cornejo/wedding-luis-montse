@@ -16,10 +16,12 @@ export const Visual = styled.div`
   padding: 0 1.2rem 2rem 0;
 `;
 
-export const Photo = styled.img`
+export const Photo = styled.img<{ $isPersonalized: boolean }>`
   width: 100%;
   display: block;
-  aspect-ratio: 4 / 5;
+  max-height: ${({ $isPersonalized }) => ($isPersonalized ? '32rem' : 'none')};
+  aspect-ratio: ${({ $isPersonalized }) => ($isPersonalized ? 'auto' : '1')};
+  background: ${({ $isPersonalized }) => ($isPersonalized ? 'transparent' : 'var(--surface-soft)')};
   object-fit: cover;
   border-radius: 4rem 1.2rem 2rem 1.2rem;
   box-shadow: var(--shadow);

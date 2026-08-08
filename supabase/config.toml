@@ -1,0 +1,4 @@
+project_id = "duvozounpdmvuwsnwlun"
+
+[functions.invitation-image]
+verify_jwt = false

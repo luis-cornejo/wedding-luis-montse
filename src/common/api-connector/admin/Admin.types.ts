@@ -32,6 +32,7 @@ export type AdminInvitationDetail = {
   group_name: string;
   guests: AdminGuest[];
   id: string;
+  image_path: string | null;
   locale: 'ca' | 'es';
   submitted_at: string | null;
   token: string;

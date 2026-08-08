@@ -94,4 +94,5 @@ export type CountdownState = {
 export type RsvpInvitationSummary = {
   groupName: string;
   hasSubmitted: boolean;
+  imageUrl?: string;
 };

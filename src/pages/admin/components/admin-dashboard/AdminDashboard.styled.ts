@@ -330,6 +330,120 @@ export const SelectControl = styled.div`
   }
 `;
 
+export const ImageField = styled.div`
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 700;
+`;
+
+export const ImageUpload = styled.div<{ $hasImage: boolean; $isDragging: boolean }>`
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: ${({ $hasImage }) => ($hasImage ? 'min(100%, 24rem)' : '100%')};
+  aspect-ratio: ${({ $hasImage }) => ($hasImage ? '4 / 3' : 'auto')};
+  min-height: ${({ $hasImage }) => ($hasImage ? '12rem' : '5.8rem')};
+  margin-top: 0.45rem;
+  border: 1px dashed ${({ $isDragging }) => ($isDragging ? 'var(--primary)' : 'var(--outline)')};
+  border-radius: 8px;
+  background: ${({ $isDragging }) => ($isDragging ? 'var(--surface-low)' : 'var(--surface-soft)')};
+  overflow: hidden;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+
+  &:hover,
+  &:focus-within {
+    border-color: var(--primary);
+    background: var(--surface-low);
+  }
+`;
+
+export const ImagePicker = styled.label<{ $isOverlay: boolean }>`
+  position: ${({ $isOverlay }) => ($isOverlay ? 'absolute' : 'relative')};
+  z-index: 1;
+  inset: ${({ $isOverlay }) => ($isOverlay ? 'auto 3.7rem 0.75rem auto' : 'auto')};
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--primary);
+  cursor: pointer;
+  opacity: ${({ $isOverlay }) => ($isOverlay ? 0 : 1)};
+  pointer-events: ${({ $isOverlay }) => ($isOverlay ? 'none' : 'auto')};
+  transition: opacity 160ms ease;
+
+  ${ImageUpload}:hover &,
+  ${ImageUpload}:focus-within & {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  svg {
+    width: ${({ $isOverlay }) => ($isOverlay ? '2.5rem' : '1.5rem')};
+    height: ${({ $isOverlay }) => ($isOverlay ? '2.5rem' : '1.5rem')};
+    padding: ${({ $isOverlay }) => ($isOverlay ? '0.55rem' : '0')};
+    border-radius: 50%;
+    background: ${({ $isOverlay }) => ($isOverlay ? 'rgb(255 255 255 / 0.92)' : 'transparent')};
+    color: var(--secondary);
+    box-shadow: ${({ $isOverlay }) => ($isOverlay ? 'var(--shadow-soft)' : 'none')};
+  }
+
+  span {
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 400;
+    line-height: 1.45;
+  }
+
+  strong {
+    display: block;
+    margin-bottom: 0.15rem;
+    color: var(--primary);
+    font-size: 0.9rem;
+  }
+`;
+
+export const ImagePreview = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+`;
+
+export const ImageClearButton = styled.button`
+  position: absolute;
+  z-index: 1;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.92);
+  color: #8a2634;
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+
+  ${ImageUpload}:not(:hover):not(:focus-within) & {
+    opacity: 0;
+    pointer-events: none;
+  }
+`;
+
 export const GuestInputRow = styled.div`
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

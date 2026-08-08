@@ -13,6 +13,7 @@ export type RsvpGuestResponse = Omit<RsvpGuest, 'full_name'> & { attendance: Att
 
 export type RsvpInvitation = {
   group_name: string;
+  has_image: boolean;
   locale: 'ca' | 'es';
   guests: RsvpGuest[];
   submitted_at?: string | null;
