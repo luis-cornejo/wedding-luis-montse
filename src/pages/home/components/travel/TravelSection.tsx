@@ -1,3 +1,5 @@
+import { BedDouble, ExternalLink } from 'lucide-react';
+
 import type { Copy } from '../../../../application/types';
 import {
   Eyebrow,
@@ -9,6 +11,10 @@ import WeatherForecast from '../weather-forecast';
 
 import {
   Address,
+  Accommodation,
+  AccommodationLink,
+  AccommodationList,
+  AccommodationOption,
   Aside,
   CopyColumn,
   MapCard,
@@ -38,6 +44,22 @@ export default function TravelSection({ travel }: Props) {
         >
           {travel.action}
         </SecondaryButton>
+        <Accommodation>
+          <h3>{travel.accommodation.title}</h3>
+          <p>{travel.accommodation.body}</p>
+          <AccommodationList>
+            {travel.accommodation.options.map((option) => (
+              <AccommodationOption key={option.name}>
+                <BedDouble aria-hidden="true" size={20} />
+                <span>{option.name}</span>
+                <AccommodationLink href={option.url} rel="noreferrer" target="_blank">
+                  {travel.accommodation.action}
+                  <ExternalLink aria-hidden="true" size={15} />
+                </AccommodationLink>
+              </AccommodationOption>
+            ))}
+          </AccommodationList>
+        </Accommodation>
         <WeatherForecast weather={travel.weather} />
       </CopyColumn>
 

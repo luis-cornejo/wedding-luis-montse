@@ -33,6 +33,66 @@ export const SecondaryButton = styled.a`
   font-weight: 700;
 `;
 
+export const Accommodation = styled.section`
+  margin-top: 2.4rem;
+
+  h3 {
+    margin: 0;
+    color: var(--primary);
+    font-family: 'Noto Serif', Georgia, serif;
+    font-size: 1.25rem;
+  }
+
+  > p {
+    margin: 0.5rem 0 1rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+`;
+
+export const AccommodationList = styled.div`
+  display: grid;
+  gap: 0.6rem;
+`;
+
+export const AccommodationOption = styled.article`
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid var(--outline);
+  border-radius: 8px;
+  background: var(--surface-card);
+
+  > svg {
+    color: var(--secondary);
+  }
+
+  > span {
+    color: var(--primary);
+    font-weight: 700;
+  }
+
+  @media (max-width: 460px) {
+    grid-template-columns: auto minmax(0, 1fr);
+
+    a {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+  }
+`;
+
+export const AccommodationLink = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #105871;
+  font-size: 0.88rem;
+  font-weight: 700;
+`;
+
 export const Aside = styled.div`
   display: grid;
   gap: 1.2rem;

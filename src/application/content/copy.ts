@@ -62,6 +62,21 @@ export const copy: Record<Locale, Copy> = {
       body: 'La finca está en Sant Fost de Campsentelles, cerca de Barcelona, en un sitio tranquilo y solo para nosotros.',
       address: 'Avda. de la Conreria, 16 · 08105 Sant Fost de Campsentelles, Barcelona',
       action: 'Abrir en Google Maps',
+      accommodation: {
+        title: 'Alojamientos cercanos',
+        body: 'Mas Llombart nos ha recomendado estas dos opciones por cercanía.',
+        action: 'Ver ubicación',
+        options: [
+          {
+            name: 'B&B HOTEL Barcelona Mollet',
+            url: 'https://maps.app.goo.gl/AL13Hv2E3CHs34SGA',
+          },
+          {
+            name: 'Hotel ibis Barcelona Mollet',
+            url: 'https://maps.app.goo.gl/xALX5rr3y9sFVqLF7',
+          },
+        ],
+      },
       tips: [
         {
           title: 'Coche o taxi',
@@ -185,6 +200,21 @@ export const copy: Record<Locale, Copy> = {
       body: 'La finca és a Sant Fost de Campsentelles, a prop de Barcelona, en un lloc tranquil i només per a nosaltres.',
       address: 'Avda. de la Conreria, 16 · 08105 Sant Fost de Campsentelles, Barcelona',
       action: 'Obrir a Google Maps',
+      accommodation: {
+        title: 'Allotjaments propers',
+        body: 'Mas Llombart ens ha recomanat aquestes dues opcions per proximitat.',
+        action: 'Veure ubicació',
+        options: [
+          {
+            name: 'B&B HOTEL Barcelona Mollet',
+            url: 'https://maps.app.goo.gl/AL13Hv2E3CHs34SGA',
+          },
+          {
+            name: 'Hotel ibis Barcelona Mollet',
+            url: 'https://maps.app.goo.gl/xALX5rr3y9sFVqLF7',
+          },
+        ],
+      },
       tips: [
         {
           title: 'Cotxe o taxi',

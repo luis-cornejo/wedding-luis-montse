@@ -39,6 +39,12 @@ export type Copy = {
     address: string;
     action: string;
     tips: Array<{ title: string; text: string }>;
+    accommodation: {
+      title: string;
+      body: string;
+      action: string;
+      options: Array<{ name: string; url: string }>;
+    };
     weather: {
       title: string;
       availableSoon: string;

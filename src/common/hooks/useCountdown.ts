@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import type { Copy, CountdownState } from '../../application/types';
 
-const weddingDate = new Date('2026-11-08T13:00:00+01:00');
+const weddingDate = new Date('2026-11-08T12:00:00+01:00');
 
 function getCountdown(): CountdownState {
   const diff = Math.max(0, weddingDate.getTime() - Date.now());
